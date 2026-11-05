@@ -22,3 +22,11 @@ Thumbs.db
 
 # Scratch file left over from an edit.
 /front/__tmp_u.ts
+
+# Scratch smoke scripts used to debug chart rendering.
+/front/.smoke.tsx
+/front/.smoke2.tsx
+/front/.smoke.tsconfig.json
+
+# Nested third-party repo (own remote: github.com/Rviena/agunsa-seguridad).
+/agunsa-seguridad/

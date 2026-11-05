@@ -4,6 +4,13 @@ import { PageHeader } from '@/components/page-header';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from '@/components/ui/empty';
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -14,6 +21,7 @@ import { CAMERAS } from '@/data/cameras';
 import { SECTORS } from '@/data/sectors';
 import type { Camera } from '@/domain/types';
 import { useZonesStore } from '@/store/zones-store';
+import { SquareStack } from 'lucide-react';
 import { useState } from 'react';
 import { ZoneEditor } from './zone-editor';
 
@@ -96,9 +104,17 @@ export function ZonesView() {
           onToggleLine={toggleLine}
         />
       ) : (
-        <p className="text-sm text-muted-foreground">
-          Selecciona una cámara para configurar sus zonas.
-        </p>
+        <Empty className="border border-border/60">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <SquareStack />
+            </EmptyMedia>
+            <EmptyTitle>Selecciona una cámara</EmptyTitle>
+            <EmptyDescription>
+              Selecciona una cámara para configurar sus zonas y líneas virtuales.
+            </EmptyDescription>
+          </EmptyHeader>
+        </Empty>
       )}
 
       {selectedZoneId ? (

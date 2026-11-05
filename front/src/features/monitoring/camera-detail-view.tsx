@@ -1,18 +1,50 @@
 'use client';
 
 import { CameraFeed } from '@/components/camera-feed';
+import { DetailList } from '@/components/detail-list';
 import { PageHeader } from '@/components/page-header';
+import { SegmentedControl } from '@/components/segmented-control';
 import { CameraStatusBadge, SeverityBadge } from '@/components/status-badge';
 import { Badge } from '@/components/ui/badge';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from '@/components/ui/empty';
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemMedia,
+  ItemTitle,
+} from '@/components/ui/item';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CAMERAS } from '@/data/cameras';
 import { getSector } from '@/data/sectors';
 import { formatDateTime, PLATFORM_NOW_ISO } from '@/domain/clock';
-import { RULE_EVENT_LABEL, ZONE_KIND_LABEL } from '@/domain/labels';
-import type { Camera, IlluminationPreference } from '@/domain/types';
+import {
+  RULE_EVENT_LABEL,
+  CLASSIFICATION_LABEL,
+  PRIORITY_LABEL,
+  ZONE_KIND_LABEL,
+} from '@/domain/labels';
+import type { Camera } from '@/domain/types';
 import { useSimulationFeed } from '@/features/simulation/use-simulation-feed';
 import { useCamerasStore } from '@/store/cameras-store';
 import { useIncidentsStore } from '@/store/incidents-store';
@@ -23,6 +55,7 @@ import { ArrowLeft, Boxes, ChevronRight, Eye, Film, LineChart, Radar } from 'luc
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { CameraSpecPanel } from './camera-spec-panel';
+import { CameraAssessmentPanel } from './camera-assessment-panel';
 
 /**
  * Ficha de cámara (módulo 2 del pliego).
@@ -31,10 +64,12 @@ import { CameraSpecPanel } from './camera-spec-panel';
  * inteligentes y especificaciones. El directo incluye el feed con
  * superposiciones, zonas y líneas virtuales configuradas para la cámara.
  */
-const ILLUMINATION_OPTIONS: readonly { value: IlluminationPreference; label: string }[] = [
+const SCENE_HOUR_OPTIONS: readonly { value: string; label: string }[] = [
   { value: 'auto', label: 'Auto' },
-  { value: 'dia', label: 'Día' },
-  { value: 'noche', label: 'Noche (IR)' },
+  { value: '9', label: '09:00' },
+  { value: '14', label: '14:00' },
+  { value: '19', label: '19:00' },
+  { value: '22', label: '22:00' },
 ];
 
 export function CameraDetailView({ cameraId }: { cameraId: string }) {
@@ -44,8 +79,8 @@ export function CameraDetailView({ cameraId }: { cameraId: string }) {
   const lines = useZonesStore((state) => state.virtualLines);
   const rules = useRulesStore((state) => state.rules);
   const toggleZone = useZonesStore((state) => state.toggleZone);
-  const illumination = useUiStore((state) => state.illumination);
-  const setIllumination = useUiStore((state) => state.setIllumination);
+  const sceneHour = useUiStore((state) => state.sceneHour);
+  const setSceneHour = useUiStore((state) => state.setSceneHour);
   const collapsedPanels = useUiStore((state) => state.collapsedPanels);
   const togglePanel = useUiStore((state) => state.togglePanel);
 
@@ -88,14 +123,27 @@ export function CameraDetailView({ cameraId }: { cameraId: string }) {
       <div className="flex flex-col gap-4">
         <PageHeader
           title="Cámara no encontrada"
-          description={`El identificador ${cameraId} no existe en el registro simulado.`}
+          description={`El identificador ${cameraId} no existe en el registro de cámaras.`}
         />
-        <Button asChild variant="outline" className="w-fit">
-          <Link href="/monitoreo">
-            <ArrowLeft />
-            Volver al centro de monitoreo
-          </Link>
-        </Button>
+        <Empty className="border border-border/60">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <Boxes />
+            </EmptyMedia>
+            <EmptyTitle>Sin ficha para {cameraId}</EmptyTitle>
+            <EmptyDescription>
+              El identificador no existe en el registro de las 36 cámaras.
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Button asChild variant="outline">
+              <Link href="/monitoreo">
+                <ArrowLeft />
+                Volver al centro de monitoreo
+              </Link>
+            </Button>
+          </EmptyContent>
+        </Empty>
       </div>
     );
   }
@@ -106,19 +154,40 @@ export function CameraDetailView({ cameraId }: { cameraId: string }) {
 
   return (
     <div className="flex flex-col gap-5">
-      <Button asChild variant="ghost" size="sm" className="-ml-2 w-fit">
-        <Link href="/monitoreo">
-          <ArrowLeft />
-          Centro de monitoreo
-        </Link>
-      </Button>
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/monitoreo">Centro de monitoreo</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem className="text-muted-foreground">
+            {sector?.name ?? camera.sectorId}
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{camera.id}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
 
       <PageHeader
         eyebrow={`Módulo 2 · Ficha de cámara ${camera.id}`}
         title={camera.name}
-        description={`${sector?.name ?? camera.sectorId} · ${camera.spec.resolutionWidth}×${camera.spec.resolutionHeight} · lente ${camera.spec.focalLengthMm.toFixed(1)} mm (${camera.spec.horizontalFovDeg}°) · IP ${camera.ip}`}
+        description={`${sector?.name ?? camera.sectorId} · ${camera.spec.model} · resolución recibida ${camera.resolution} · lente ${camera.spec.focalLengthMm.toFixed(1)} mm (${camera.spec.horizontalFovDeg}°) · IP ${camera.ip}`}
         actions={
           <>
+            <Badge
+              variant="outline"
+              className="border-border bg-muted text-foreground"
+              data-testid="camera-classification"
+            >
+              {CLASSIFICATION_LABEL[camera.assessment.classification]}
+            </Badge>
+            <Badge variant="outline" className="border-border bg-muted text-muted-foreground">
+              {PRIORITY_LABEL[camera.assessment.priority]}
+            </Badge>
             <CameraStatusBadge status={camera.status} />
             {camera.alertSeverity ? <SeverityBadge severity={camera.alertSeverity} /> : null}
             <Badge variant="outline" className="border-border bg-muted text-muted-foreground">
@@ -141,6 +210,9 @@ export function CameraDetailView({ cameraId }: { cameraId: string }) {
           </TabsTrigger>
           <TabsTrigger value="zonas" data-testid="camera-tab-zonas">
             Zonas
+          </TabsTrigger>
+          <TabsTrigger value="evaluacion" data-testid="camera-tab-evaluacion">
+            Evaluación
           </TabsTrigger>
           <TabsTrigger value="especificaciones" data-testid="camera-tab-especificaciones">
             Especificaciones
@@ -170,7 +242,7 @@ export function CameraDetailView({ cameraId }: { cameraId: string }) {
                     showDetections={showDetections}
                     zones={showZones ? cameraZones : []}
                     lines={showLines ? cameraLines : []}
-                    illumination={illumination}
+                    sceneHour={sceneHour}
                     getTimeSec={simulation.getTimeSec}
                     getClockMs={simulation.getClockMs}
                     healthWarning={simulation.healthWarning}
@@ -196,28 +268,22 @@ export function CameraDetailView({ cameraId }: { cameraId: string }) {
                     testId="toggle-lines"
                   />
                   <div className="flex items-center gap-1.5">
-                    <span className="text-xs text-muted-foreground">Iluminación</span>
-                    <div className="flex items-center gap-0.5 rounded-lg bg-muted p-0.5">
-                      {ILLUMINATION_OPTIONS.map((option) => (
-                        <button
-                          key={option.value}
-                          type="button"
-                          onClick={() => setIllumination(option.value)}
-                          aria-pressed={illumination === option.value}
-                          data-testid={`illumination-${option.value}`}
-                          className={`rounded-md px-2 py-1 text-[11px] font-medium transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none ${
-                            illumination === option.value
-                              ? 'bg-primary text-primary-foreground'
-                              : 'text-muted-foreground hover:text-foreground'
-                          }`}
-                        >
-                          {option.label}
-                        </button>
-                      ))}
-                    </div>
+                    <span className="text-xs text-muted-foreground">Hora</span>
+                    <SegmentedControl
+                      size="sm"
+                      ariaLabel="Hora de la escena"
+                      value={sceneHour === null ? 'auto' : String(sceneHour)}
+                      onValueChange={(value) =>
+                        setSceneHour(value === 'auto' ? null : Number(value))
+                      }
+                      options={SCENE_HOUR_OPTIONS.map((option) => ({
+                        value: option.value,
+                        label: option.label,
+                      }))}
+                    />
                   </div>
                   <span className="ml-auto text-xs text-muted-foreground">
-                    Detección y superposiciones simuladas en el navegador.
+                    Detección y superposiciones procesadas localmente.
                   </span>
                 </div>
               </Card>
@@ -231,9 +297,10 @@ export function CameraDetailView({ cameraId }: { cameraId: string }) {
                 </CardHeader>
                 <CardContent>
                   {cameraIncidents.length === 0 ? (
-                    <p className="py-6 text-center text-sm text-muted-foreground">
-                      Esta cámara no registra eventos en el histórico simulado.
-                    </p>
+                    <PanelEmpty
+                      title="Sin histórico de eventos"
+                      description="Esta cámara no registra eventos en el histórico."
+                    />
                   ) : (
                     <ul className="flex flex-col divide-y divide-border">
                       {cameraIncidents.slice(0, 10).map((incident) => (
@@ -277,79 +344,79 @@ export function CameraDetailView({ cameraId }: { cameraId: string }) {
 
                         <TabsContent value="zonas" className="mt-3 flex flex-col gap-2">
                           {cameraZones.length === 0 ? (
-                            <p className="py-4 text-center text-sm text-muted-foreground">
-                              Sin zonas configuradas.
-                            </p>
+                            <PanelEmpty
+                              title="Sin zonas configuradas"
+                              description="Esta cámara todavía no tiene zonas inteligentes."
+                            />
                           ) : (
-                            cameraZones.map((zone) => (
-                              <div
-                                key={zone.id}
-                                className="flex items-start justify-between gap-3 rounded-lg border border-border px-3 py-2"
-                              >
-                                <div className="min-w-0">
-                                  <p className="truncate text-sm font-medium">{zone.name}</p>
-                                  <p className="mt-0.5 text-[11px] text-muted-foreground">
-                                    {ZONE_KIND_LABEL[zone.kind]}
-                                    {zone.maxDwellSeconds !== null
-                                      ? ` · máx. ${zone.maxDwellSeconds} s`
-                                      : ''}
-                                  </p>
-                                </div>
-                                <Switch
-                                  checked={zone.enabled}
-                                  onCheckedChange={(checked) => toggleZone(zone.id, checked)}
-                                  aria-label={`Activar ${zone.name}`}
-                                />
-                              </div>
-                            ))
+                            <DetailList
+                              items={cameraZones.map((zone) => ({
+                                label: zone.name,
+                                value: (
+                                  <span className="flex items-center justify-between gap-3">
+                                    <span className="text-xs font-normal text-muted-foreground">
+                                      {ZONE_KIND_LABEL[zone.kind]}
+                                      {zone.maxDwellSeconds !== null
+                                        ? ` · máx. ${zone.maxDwellSeconds} s`
+                                        : ''}
+                                    </span>
+                                    <Switch
+                                      checked={zone.enabled}
+                                      onCheckedChange={(checked) => toggleZone(zone.id, checked)}
+                                      aria-label={`Activar ${zone.name}`}
+                                    />
+                                  </span>
+                                ),
+                              }))}
+                            />
                           )}
                         </TabsContent>
 
                         <TabsContent value="lineas" className="mt-3 flex flex-col gap-2">
                           {cameraLines.length === 0 ? (
-                            <p className="py-4 text-center text-sm text-muted-foreground">
-                              Sin líneas virtuales configuradas.
-                            </p>
+                            <PanelEmpty
+                              title="Sin líneas virtuales configuradas"
+                              description="No hay líneas de cruce asociadas a esta cámara."
+                            />
                           ) : (
-                            cameraLines.map((line) => (
-                              <div
-                                key={line.id}
-                                className="flex items-start gap-3 rounded-lg border border-border px-3 py-2"
-                              >
-                                <LineChart className="mt-0.5 size-3.5 shrink-0 text-warning" />
-                                <div className="min-w-0">
-                                  <p className="truncate text-sm font-medium">{line.name}</p>
-                                  <p className="mt-0.5 text-[11px] text-muted-foreground">
+                            <DetailList
+                              items={cameraLines.map((line) => ({
+                                label: line.name,
+                                value: (
+                                  <span className="flex items-center gap-1.5 text-xs font-normal text-muted-foreground">
+                                    <LineChart className="size-3.5 shrink-0 text-warning" />
                                     Sentido: {line.direction}
-                                  </p>
-                                </div>
-                              </div>
-                            ))
+                                  </span>
+                                ),
+                              }))}
+                            />
                           )}
                         </TabsContent>
 
                         <TabsContent value="reglas" className="mt-3 flex flex-col gap-2">
                           {cameraRules.length === 0 ? (
-                            <p className="py-4 text-center text-sm text-muted-foreground">
-                              Sin reglas aplicables a esta cámara.
-                            </p>
+                            <PanelEmpty
+                              title="Sin reglas aplicables"
+                              description="Ninguna regla del pliego alcanza a esta cámara."
+                            />
                           ) : (
-                            cameraRules.map((rule) => (
-                              <div
-                                key={rule.id}
-                                className="rounded-lg border border-border px-3 py-2"
-                              >
-                                <div className="flex items-center justify-between gap-2">
-                                  <p className="truncate text-sm font-medium">{rule.name}</p>
-                                  <SeverityBadge severity={rule.severity} />
-                                </div>
-                                <p className="mt-1 text-[11px] text-muted-foreground">
-                                  {RULE_EVENT_LABEL[rule.event]} · {rule.schedule.start}–
-                                  {rule.schedule.end}
-                                  {rule.minDwellSeconds > 0 ? ` · ${rule.minDwellSeconds} s` : ''}
-                                </p>
-                              </div>
-                            ))
+                            <DetailList
+                              items={cameraRules.map((rule) => ({
+                                label: rule.name,
+                                value: (
+                                  <span className="flex flex-wrap items-center gap-2 text-xs font-normal text-muted-foreground">
+                                    <span>
+                                      {RULE_EVENT_LABEL[rule.event]} · {rule.schedule.start}–
+                                      {rule.schedule.end}
+                                      {rule.minDwellSeconds > 0
+                                        ? ` · ${rule.minDwellSeconds} s`
+                                        : ''}
+                                    </span>
+                                    <SeverityBadge severity={rule.severity} />
+                                  </span>
+                                ),
+                              }))}
+                            />
                           )}
                         </TabsContent>
                       </Tabs>
@@ -361,16 +428,19 @@ export function CameraDetailView({ cameraId }: { cameraId: string }) {
                       <CardTitle>Registro de la cámara</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <dl className="grid grid-cols-2 gap-x-4 gap-y-2.5 text-xs">
-                        <Spec label="Identificador" value={camera.id} />
-                        <Spec label="Sector" value={sector?.name ?? '—'} />
-                        <Spec label="Tipo de escena" value={camera.scene} />
-                        <Spec label="Campo de visión" value={`${camera.spec.horizontalFovDeg}°`} />
-                        <Spec label="Orientación" value={`${camera.heading}°`} />
-                        <Spec label="Resolución" value={camera.resolution} />
-                        <Spec label="Dirección IP" value={camera.ip} />
-                        <Spec label="Zona principal" value={camera.zoneId} />
-                      </dl>
+                      <DetailList
+                        columns={2}
+                        items={[
+                          { label: 'Identificador', value: camera.id },
+                          { label: 'Sector', value: sector?.name ?? '—' },
+                          { label: 'Tipo de escena', value: camera.scene },
+                          { label: 'Campo de visión', value: `${camera.spec.horizontalFovDeg}°` },
+                          { label: 'Orientación', value: `${camera.heading}°` },
+                          { label: 'Resolución', value: camera.resolution },
+                          { label: 'Dirección IP', value: camera.ip },
+                          { label: 'Zona principal', value: camera.zoneId },
+                        ]}
+                      />
                       <div className="mt-4 flex flex-wrap gap-2">
                         <Badge
                           variant="outline"
@@ -407,32 +477,33 @@ export function CameraDetailView({ cameraId }: { cameraId: string }) {
             <CardHeader>
               <CardTitle>Grabaciones disponibles</CardTitle>
               <CardDescription>
-                Fragmentos almacenados en el NVR para {camera.id}. Contenido simulado.
+                Fragmentos almacenados en el NVR para {camera.id}.
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <ul className="flex flex-col gap-2">
+              <ItemGroup className="gap-2">
                 {recordings.map((recording) => (
-                  <li
-                    key={recording.id}
-                    className="flex items-center gap-3 rounded-lg border border-border px-3 py-2.5"
-                  >
-                    <Film className="size-4 shrink-0 text-info" />
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm font-medium">{recording.title}</span>
-                      <span className="block text-[11px] text-muted-foreground">
+                  <Item key={recording.id} variant="outline">
+                    <ItemMedia variant="icon">
+                      <Film className="text-info" />
+                    </ItemMedia>
+                    <ItemContent>
+                      <ItemTitle>{recording.title}</ItemTitle>
+                      <ItemDescription>
                         {recording.window} · {recording.duration} · {recording.size}
-                      </span>
-                    </span>
-                    <Badge
-                      variant="outline"
-                      className="border-border bg-muted text-muted-foreground"
-                    >
-                      {recording.kind}
-                    </Badge>
-                  </li>
+                      </ItemDescription>
+                    </ItemContent>
+                    <ItemActions>
+                      <Badge
+                        variant="outline"
+                        className="border-border bg-muted text-muted-foreground"
+                      >
+                        {recording.kind}
+                      </Badge>
+                    </ItemActions>
+                  </Item>
                 ))}
-              </ul>
+              </ItemGroup>
             </CardContent>
           </Card>
         </TabsContent>
@@ -447,9 +518,10 @@ export function CameraDetailView({ cameraId }: { cameraId: string }) {
             </CardHeader>
             <CardContent>
               {cameraIncidents.length === 0 ? (
-                <p className="py-6 text-center text-sm text-muted-foreground">
-                  Sin eventos registrados para esta cámara.
-                </p>
+                <PanelEmpty
+                  title="Sin eventos registrados"
+                  description="Sin eventos registrados para esta cámara."
+                />
               ) : (
                 <ul className="flex flex-col divide-y divide-border">
                   {cameraIncidents.map((incident) => (
@@ -484,33 +556,31 @@ export function CameraDetailView({ cameraId }: { cameraId: string }) {
               </CardHeader>
               <CardContent>
                 {cameraZones.length === 0 ? (
-                  <p className="py-6 text-center text-sm text-muted-foreground">
-                    Sin zonas configuradas para esta cámara.
-                  </p>
+                  <PanelEmpty
+                    title="Sin zonas configuradas"
+                    description="Sin zonas configuradas para esta cámara."
+                  />
                 ) : (
-                  <ul className="flex flex-col gap-2">
-                    {cameraZones.map((zone) => (
-                      <li
-                        key={zone.id}
-                        className="flex items-start justify-between gap-3 rounded-lg border border-border px-3 py-2"
-                      >
-                        <div className="min-w-0">
-                          <p className="truncate text-sm font-medium">{zone.name}</p>
-                          <p className="mt-0.5 text-[11px] text-muted-foreground">
+                  <DetailList
+                    items={cameraZones.map((zone) => ({
+                      label: zone.name,
+                      value: (
+                        <span className="flex items-center justify-between gap-3">
+                          <span className="text-xs font-normal text-muted-foreground">
                             {ZONE_KIND_LABEL[zone.kind]} · severidad {zone.severity}
                             {zone.maxDwellSeconds !== null
                               ? ` · permanencia máx. ${zone.maxDwellSeconds} s`
                               : ''}
-                          </p>
-                        </div>
-                        <Switch
-                          checked={zone.enabled}
-                          onCheckedChange={(checked) => toggleZone(zone.id, checked)}
-                          aria-label={`Activar ${zone.name}`}
-                        />
-                      </li>
-                    ))}
-                  </ul>
+                          </span>
+                          <Switch
+                            checked={zone.enabled}
+                            onCheckedChange={(checked) => toggleZone(zone.id, checked)}
+                            aria-label={`Activar ${zone.name}`}
+                          />
+                        </span>
+                      ),
+                    }))}
+                  />
                 )}
               </CardContent>
             </Card>
@@ -523,41 +593,45 @@ export function CameraDetailView({ cameraId }: { cameraId: string }) {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <ul className="flex flex-col gap-2">
-                  {cameraLines.map((line) => (
-                    <li
-                      key={line.id}
-                      className="flex items-start gap-3 rounded-lg border border-border px-3 py-2"
-                    >
-                      <LineChart className="mt-0.5 size-3.5 shrink-0 text-warning" />
-                      <div className="min-w-0">
-                        <p className="truncate text-sm font-medium">{line.name}</p>
-                        <p className="mt-0.5 text-[11px] text-muted-foreground">
-                          Sentido: {line.direction} · {line.enabled ? 'activa' : 'inactiva'}
-                        </p>
-                      </div>
-                    </li>
-                  ))}
-                  {cameraRules.map((rule) => (
-                    <li key={rule.id} className="rounded-lg border border-border px-3 py-2">
-                      <div className="flex items-center justify-between gap-2">
-                        <p className="truncate text-sm font-medium">{rule.name}</p>
-                        <SeverityBadge severity={rule.severity} />
-                      </div>
-                      <p className="mt-1 text-[11px] text-muted-foreground">
-                        {RULE_EVENT_LABEL[rule.event]} · {rule.schedule.start}–{rule.schedule.end}
-                      </p>
-                    </li>
-                  ))}
-                  {cameraLines.length === 0 && cameraRules.length === 0 ? (
-                    <li className="rounded-lg border border-dashed border-border px-3 py-6 text-center text-sm text-muted-foreground">
-                      Sin líneas virtuales ni reglas configuradas.
-                    </li>
-                  ) : null}
-                </ul>
+                {cameraLines.length === 0 && cameraRules.length === 0 ? (
+                  <PanelEmpty
+                    title="Sin líneas ni reglas"
+                    description="Sin líneas virtuales ni reglas configuradas."
+                  />
+                ) : (
+                  <DetailList
+                    items={[
+                      ...cameraLines.map((line) => ({
+                        label: line.name,
+                        value: (
+                          <span className="flex items-center gap-1.5 text-xs font-normal text-muted-foreground">
+                            <LineChart className="size-3.5 shrink-0 text-warning" />
+                            Sentido: {line.direction} · {line.enabled ? 'activa' : 'inactiva'}
+                          </span>
+                        ),
+                      })),
+                      ...cameraRules.map((rule) => ({
+                        label: rule.name,
+                        value: (
+                          <span className="flex flex-wrap items-center gap-2 text-xs font-normal text-muted-foreground">
+                            <span>
+                              {RULE_EVENT_LABEL[rule.event]} · {rule.schedule.start}–
+                              {rule.schedule.end}
+                            </span>
+                            <SeverityBadge severity={rule.severity} />
+                          </span>
+                        ),
+                      })),
+                    ]}
+                  />
+                )}
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        <TabsContent value="evaluacion" className="flex flex-col gap-4">
+          <CameraAssessmentPanel camera={camera} />
         </TabsContent>
 
         <TabsContent value="especificaciones" className="flex flex-col gap-4">
@@ -621,11 +695,21 @@ function Toggle({
   );
 }
 
-function Spec({ label, value }: { label: string; value: string }) {
+/**
+ * Estado vacío de un panel lateral.
+ *
+ * Sustituye al párrafo suelto: título, descripción y filete discontinuo.
+ */
+function PanelEmpty({ title, description }: { title: string; description: string }) {
   return (
-    <div>
-      <dt className="text-muted-foreground">{label}</dt>
-      <dd className="mt-0.5 font-medium text-foreground">{value}</dd>
-    </div>
+    <Empty className="border border-border/60">
+      <EmptyHeader>
+        <EmptyMedia variant="icon">
+          <Boxes />
+        </EmptyMedia>
+        <EmptyTitle>{title}</EmptyTitle>
+        <EmptyDescription>{description}</EmptyDescription>
+      </EmptyHeader>
+    </Empty>
   );
 }

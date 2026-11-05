@@ -39,7 +39,10 @@ export function outwardNormal(point: Point, polygon: readonly Point[]): { x: num
   if (polygon.length < 3) return { x: 0, y: -1 };
 
   const centroid = polygon.reduce(
-    (acc, vertex) => ({ x: acc.x + vertex.x / polygon.length, y: acc.y + vertex.y / polygon.length }),
+    (acc, vertex) => ({
+      x: acc.x + vertex.x / polygon.length,
+      y: acc.y + vertex.y / polygon.length,
+    }),
     { x: 0, y: 0 },
   );
 

@@ -1,12 +1,26 @@
+import { baselineGeospatialZones } from '@/data/geospatial/facility-layout';
 import { VIRTUAL_LINES, ZONES } from '@/data/zones';
-import type { VirtualLine, Zone } from '@/domain/types';
+import type { GeospatialZone, VirtualLine, Zone } from '@/domain/types';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-/** Zonas inteligentes y líneas virtuales configuradas por el operador. */
+/**
+ * Zonas inteligentes, líneas virtuales y zonas georreferenciadas.
+ *
+ * Conviven dos geometrías distintas y **no** intercambiables:
+ *  - `zones`: polígonos normalizados dentro del encuadre de una cámara. Los
+ *    usa el editor de zonas sobre la imagen y el motor de reglas.
+ *  - `geospatialZones`: polígonos WGS84 sobre el terreno. Los dibuja el
+ *    operador en la vista geoespacial (Cesium).
+ *
+ * Ambas se persisten en la misma tienda para que el operador tenga un único
+ * punto de guardado al operar la plataforma.
+ */
 interface ZonesState {
   zones: Zone[];
   virtualLines: VirtualLine[];
+  /** Zonas dibujadas sobre el terreno real (vista geoespacial). */
+  geospatialZones: GeospatialZone[];
   updateZone: (zone: Zone) => void;
   addZone: (zone: Zone) => void;
   removeZone: (zoneId: string) => void;
@@ -15,6 +29,11 @@ interface ZonesState {
   addLine: (line: VirtualLine) => void;
   removeLine: (lineId: string) => void;
   toggleLine: (lineId: string, enabled: boolean) => void;
+  addGeospatialZone: (zone: GeospatialZone) => void;
+  updateGeospatialZone: (zone: GeospatialZone) => void;
+  removeGeospatialZone: (zoneId: string) => void;
+  toggleGeospatialZone: (zoneId: string, enabled: boolean) => void;
+  clearGeospatialZones: () => void;
   resetAll: () => void;
 }
 
@@ -23,6 +42,7 @@ export const useZonesStore = create<ZonesState>()(
     (set) => ({
       zones: [...ZONES],
       virtualLines: [...VIRTUAL_LINES],
+      geospatialZones: baselineGeospatialZones(),
       updateZone: (zone) =>
         set((state) => ({
           zones: state.zones.map((item) => (item.id === zone.id ? zone : item)),
@@ -40,21 +60,49 @@ export const useZonesStore = create<ZonesState>()(
         })),
       addLine: (line) => set((state) => ({ virtualLines: [...state.virtualLines, line] })),
       removeLine: (lineId) =>
-        set((state) => ({ virtualLines: state.virtualLines.filter((item) => item.id !== lineId) })),
+        set((state) => ({
+          virtualLines: state.virtualLines.filter((item) => item.id !== lineId),
+        })),
       toggleLine: (lineId, enabled) =>
         set((state) => ({
           virtualLines: state.virtualLines.map((item) =>
             item.id === lineId ? { ...item, enabled } : item,
           ),
         })),
-      resetAll: () => set({ zones: [...ZONES], virtualLines: [...VIRTUAL_LINES] }),
+      addGeospatialZone: (zone) =>
+        set((state) => ({ geospatialZones: [...state.geospatialZones, zone] })),
+      updateGeospatialZone: (zone) =>
+        set((state) => ({
+          geospatialZones: state.geospatialZones.map((item) => (item.id === zone.id ? zone : item)),
+        })),
+      removeGeospatialZone: (zoneId) =>
+        set((state) => ({
+          geospatialZones: state.geospatialZones.filter((item) => item.id !== zoneId),
+        })),
+      toggleGeospatialZone: (zoneId, enabled) =>
+        set((state) => ({
+          geospatialZones: state.geospatialZones.map((item) =>
+            item.id === zoneId ? { ...item, enabled } : item,
+          ),
+        })),
+      clearGeospatialZones: () => set({ geospatialZones: [] }),
+      resetAll: () =>
+        set({
+          zones: [...ZONES],
+          virtualLines: [...VIRTUAL_LINES],
+          geospatialZones: baselineGeospatialZones(),
+        }),
     }),
     {
       name: 'agunsa-sentinel:zones',
-      version: 1,
+      version: 2,
       storage: createJSONStorage(() => localStorage),
       skipHydration: true,
-      partialize: (state) => ({ zones: state.zones, virtualLines: state.virtualLines }),
+      partialize: (state) => ({
+        zones: state.zones,
+        virtualLines: state.virtualLines,
+        geospatialZones: state.geospatialZones,
+      }),
     },
   ),
 );
@@ -65,4 +113,8 @@ export function selectZones(state: ZonesState): Zone[] {
 
 export function selectVirtualLines(state: ZonesState): VirtualLine[] {
   return state.virtualLines;
+}
+
+export function selectGeospatialZones(state: ZonesState): GeospatialZone[] {
+  return state.geospatialZones;
 }

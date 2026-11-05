@@ -1,13 +1,7 @@
 'use client';
 
 import { useEffect, useImperativeHandle, useRef, type Ref } from 'react';
-import type {
-  Camera,
-  CameraTrackTarget,
-  IlluminationPreference,
-  VirtualLine,
-  Zone,
-} from '@/domain/types';
+import type { Camera, CameraTrackTarget, SceneHour, VirtualLine, Zone } from '@/domain/types';
 import { createFeedRenderer, type FeedRendererOptions } from './lib/renderer';
 import { subscribeToTicker } from './lib/ticker';
 
@@ -34,7 +28,7 @@ export interface CameraFeedProps {
   /** Modo compacto: oculta las etiquetas de confianza para lienzos pequeños. */
   compact?: boolean;
   /** Preferencia de iluminación: Auto sigue el reloj de la plataforma. */
-  illumination?: IlluminationPreference;
+  sceneHour?: SceneHour;
   /**
    * Segundo actual de la línea de tiempo simulada.
    *
@@ -63,7 +57,7 @@ export function CameraFeed({
   zones = [],
   lines = [],
   compact = false,
-  illumination = 'auto',
+  sceneHour = null,
   getTimeSec,
   getClockMs,
   healthWarning = null,
@@ -81,7 +75,7 @@ export function CameraFeed({
     showLines: lines,
     compact,
     evidence: false,
-    illumination,
+    sceneHour,
     getTimeSec,
     getClockMs,
     healthWarning,
@@ -96,7 +90,7 @@ export function CameraFeed({
     showLines: lines,
     compact,
     evidence: false,
-    illumination,
+    sceneHour,
     getTimeSec,
     getClockMs,
     healthWarning,
@@ -138,7 +132,7 @@ export interface EvidenceFrameProps {
   occurredAt: string;
   /** Segundo de la línea de tiempo en el que se sitúa la evidencia. */
   timeSec?: number;
-  illumination?: IlluminationPreference;
+  sceneHour?: SceneHour;
   className?: string;
 }
 
@@ -152,7 +146,7 @@ export function EvidenceFrame({
   targets = [],
   occurredAt,
   timeSec,
-  illumination = 'auto',
+  sceneHour = null,
   className,
 }: EvidenceFrameProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -166,7 +160,7 @@ export function EvidenceFrame({
     compact: false,
     timestampMs: Date.parse(occurredAt),
     evidence: true,
-    illumination,
+    sceneHour,
     getTimeSec: timeSec === undefined ? undefined : () => timeSec,
   });
 
@@ -180,7 +174,7 @@ export function EvidenceFrame({
     compact: false,
     timestampMs: Date.parse(occurredAt),
     evidence: true,
-    illumination,
+    sceneHour,
     getTimeSec: timeSec === undefined ? undefined : () => timeSec,
   };
 

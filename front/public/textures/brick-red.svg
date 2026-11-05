@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="64" viewBox="0 0 128 64">
+  <rect width="128" height="64" fill="#9d392d"/>
+  <path d="M0 0H128M0 16H128M0 32H128M0 48H128M0 64H128" stroke="#5f241f" stroke-width="2"/>
+  <path d="M0 0V16M32 0V16M64 0V16M96 0V16M128 0V16M16 16V32M48 16V32M80 16V32M112 16V32M0 32V48M32 32V48M64 32V48M96 32V48M128 32V48M16 48V64M48 48V64M80 48V64M112 48V64" stroke="#652820" stroke-width="2"/>
+  <path d="M2 3H29M35 3H61M67 3H93M99 3H125M18 19H45M51 19H77M83 19H109" stroke="#c26655" stroke-width="1" opacity=".55"/>
+</svg>

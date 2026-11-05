@@ -1,31 +1,34 @@
 import { PLAN_FENCE } from '@/data/plan';
+import { CAMERA_PHOTOS } from '@/data/camera-photos';
 import { CAMERA_INVENTORY, STANDARD_PENDING_ITEMS } from '@/data/camera-inventory';
+import { geoPositionForCamera } from '@/data/geospatial/camera-geography';
 import { MODEL_PROFILES } from '@/data/model-profiles';
 import { SECTOR_SEGMENTS } from '@/data/sectors';
 import { PLATFORM_NOW_MS } from '@/domain/clock';
 import { headingForCamera } from '@/domain/facing';
 import { hashSeed } from '@/domain/rng';
-import type {
-  Camera,
-  CameraScene,
-  CameraSpec,
-  CameraStatus,
-  Point,
-} from '@/domain/types';
+import type { Camera, CameraScene, CameraSpec, CameraStatus, Point } from '@/domain/types';
 
 /**
  * Registro de las 36 cámaras evaluadas en el informe de IMUPESA.
  *
- * Cada equipo conserva su identidad real (C01…C36), su IP, su modelo de
- * inventario, el resultado de las dos pruebas, la clasificación conjunta y
- * los hallazgos originales.
+ * Este módulo es la **única fuente de verdad** del inventario de cámaras: la
+ * vista 2D (SVG), la vista isométrica (Three.js), la vista geoespacial
+ * (Cesium), el registro de cámaras, la cuadrícula de monitoreo y el motor de
+ * incidentes leen todos de aquí.
  *
- * Sobre la ubicación en el plano: el informe es explícito — «No existe vínculo
- * confirmado entre los símbolos del plano y las 36 IP» — así que la posición
- * de cada cámara en el plano es **provisional**: se reparte cada sector sobre
- * un tramo del cerco y el rumbo se deriva de la normal exterior de ese tramo,
- * de modo que el cono de visión apunta hacia fuera del recinto. El
- * levantamiento de postes (fase 1 del plan) es lo que cerrará esta brecha.
+ * Cada equipo conserva su identidad real (C01…C36), su IP, su modelo de
+ * inventario, el resultado de las dos pruebas, la clasificación conjunta, los
+ * hallazgos originales y sus especificaciones técnicas.
+ *
+ * Sobre la ubicación: el informe es explícito — «No existe vínculo confirmado
+ * entre los símbolos del plano y las 36 IP» — así que la posición de cada
+ * cámara es **provisional** en las dos representaciones:
+ *  - en el plano, se reparte cada sector sobre un tramo del cerco;
+ *  - en el terreno, se reparte sobre el perímetro OSM real.
+ * En ambos casos el cono de visión apunta hacia fuera del recinto, salvo las
+ * cámaras de cobertura interior. El levantamiento de postes (fase 1 del plan)
+ * es lo que cerrará esta brecha.
  */
 
 /** Cámaras con comportamiento intermitente documentado por el informe. */
@@ -146,7 +149,7 @@ function buildSpec(cameraId: string, model: string): CameraSpec {
     aperture: profile.aperture,
     horizontalFovDeg:
       Math.round(
-        (2 * Math.atan(profile.sensorWidthMm / (2 * profile.focalLengthMm)) * 180) / Math.PI * 10,
+        ((2 * Math.atan(profile.sensorWidthMm / (2 * profile.focalLengthMm)) * 180) / Math.PI) * 10,
       ) / 10,
     irDistanceM: profile.irDistanceM,
     irWavelengthNm: profile.irWavelengthNm,
@@ -210,6 +213,8 @@ function buildCameras(): Camera[] {
         obstructionId: row.obstructionId,
       },
       positionProvisional: true,
+      geo: geoPositionForCamera(index, row.viewIntent),
+      photos: CAMERA_PHOTOS[row.id] ?? {},
       simulated: false,
     };
   });

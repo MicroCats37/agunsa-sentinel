@@ -1,11 +1,19 @@
 'use client';
 
 import { CameraFeed } from '@/components/camera-feed';
+import { FormField } from '@/components/form-field';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from '@/components/ui/empty';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Item, ItemActions, ItemContent, ItemGroup, ItemTitle } from '@/components/ui/item';
 import {
   Select,
   SelectContent,
@@ -14,6 +22,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import type {
   Camera,
   CrossingDirection,
@@ -25,6 +34,7 @@ import type {
 } from '@/domain/types';
 import { DIRECTION_LABEL, ZONE_KIND_LABEL } from '@/domain/labels';
 import { useSimulationStore } from '@/store/simulation-store';
+import { SquareStack } from 'lucide-react';
 import { useState } from 'react';
 import { Surface, type EditorMode } from './lib/surface';
 
@@ -117,34 +127,33 @@ export function ZoneEditor({
         </CardHeader>
         <CardContent>
           <div className="mb-3 flex flex-wrap items-center gap-2">
-            <Button
-              variant={mode === 'select' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => {
-                setMode('select');
-                setDraftPoints([]);
+            <ToggleGroup
+              type="single"
+              value={mode}
+              onValueChange={(value) => {
+                if (!value) return;
+                if (value === 'select') {
+                  setMode('select');
+                  setDraftPoints([]);
+                  return;
+                }
+                setMode(value as EditorMode);
               }}
-              data-testid="editor-mode-select"
-            >
-              Seleccionar
-            </Button>
-            <Button
-              variant={mode === 'polygon' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setMode('polygon')}
-              data-testid="editor-mode-polygon"
-            >
-              Dibujar polígono
-            </Button>
-            <Button
               variant="outline"
               size="sm"
-              onClick={() => setMode('line')}
-              disabled
-              title="Disponible en la versión definitiva"
+              spacing={0}
+              aria-label="Modo de edición"
             >
-              Dibujar línea
-            </Button>
+              <ToggleGroupItem value="select" data-testid="editor-mode-select">
+                Seleccionar
+              </ToggleGroupItem>
+              <ToggleGroupItem value="polygon" data-testid="editor-mode-polygon">
+                Dibujar polígono
+              </ToggleGroupItem>
+              <ToggleGroupItem value="line" disabled title="Disponible en la versión definitiva">
+                Dibujar línea
+              </ToggleGroupItem>
+            </ToggleGroup>
             <div className="ml-auto flex items-center gap-2">
               <Badge variant="outline" className="border-border bg-muted text-muted-foreground">
                 {draftPoints.length} vértices
@@ -189,18 +198,16 @@ export function ZoneEditor({
           <CardContent>
             {selected ? (
               <div className="flex flex-col gap-3">
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="zone-name">Nombre</Label>
+                <FormField label="Nombre" htmlFor="zone-name">
                   <Input
                     id="zone-name"
                     value={selected.name}
                     onChange={(event) => patchSelected({ name: event.target.value })}
                   />
-                </div>
+                </FormField>
 
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="zone-kind">Tipo</Label>
+                  <FormField label="Tipo" htmlFor="zone-kind">
                     <Select
                       value={selected.kind}
                       onValueChange={(value) => patchSelected({ kind: value as ZoneKind })}
@@ -218,10 +225,9 @@ export function ZoneEditor({
                         ))}
                       </SelectContent>
                     </Select>
-                  </div>
+                  </FormField>
 
-                  <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="zone-severity">Severidad</Label>
+                  <FormField label="Severidad" htmlFor="zone-severity">
                     <Select
                       value={selected.severity}
                       onValueChange={(value) => patchSelected({ severity: value as Severity })}
@@ -237,12 +243,15 @@ export function ZoneEditor({
                         ))}
                       </SelectContent>
                     </Select>
-                  </div>
+                  </FormField>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="zone-dwell">Permanencia máx. (s)</Label>
+                  <FormField
+                    label="Permanencia máx. (s)"
+                    htmlFor="zone-dwell"
+                    hint="Segundos que un objeto puede permanecer dentro."
+                  >
                     <Input
                       id="zone-dwell"
                       type="number"
@@ -255,9 +264,8 @@ export function ZoneEditor({
                         })
                       }
                     />
-                  </div>
-                  <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="zone-direction">Sentido</Label>
+                  </FormField>
+                  <FormField label="Sentido" htmlFor="zone-direction">
                     <Select
                       value={selected.direction ?? 'cualquiera'}
                       onValueChange={(value) =>
@@ -279,12 +287,11 @@ export function ZoneEditor({
                         )}
                       </SelectContent>
                     </Select>
-                  </div>
+                  </FormField>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="zone-start">Horario desde</Label>
+                  <FormField label="Horario desde" htmlFor="zone-start">
                     <Input
                       id="zone-start"
                       value={selected.schedule.start}
@@ -294,9 +301,8 @@ export function ZoneEditor({
                         })
                       }
                     />
-                  </div>
-                  <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="zone-end">Horario hasta</Label>
+                  </FormField>
+                  <FormField label="Horario hasta" htmlFor="zone-end">
                     <Input
                       id="zone-end"
                       value={selected.schedule.end}
@@ -306,7 +312,7 @@ export function ZoneEditor({
                         })
                       }
                     />
-                  </div>
+                  </FormField>
                 </div>
 
                 <label className="flex items-center justify-between gap-3 rounded-lg border border-border px-3 py-2">
@@ -319,9 +325,17 @@ export function ZoneEditor({
                 </label>
               </div>
             ) : (
-              <p className="py-6 text-center text-sm text-muted-foreground">
-                Ninguna zona seleccionada.
-              </p>
+              <Empty className="border border-border/60">
+                <EmptyHeader>
+                  <EmptyMedia variant="icon">
+                    <SquareStack />
+                  </EmptyMedia>
+                  <EmptyTitle>Ninguna zona seleccionada</EmptyTitle>
+                  <EmptyDescription>
+                    Selecciona una zona sobre el lienzo o dibuja un polígono nuevo.
+                  </EmptyDescription>
+                </EmptyHeader>
+              </Empty>
             )}
           </CardContent>
         </Card>
@@ -334,50 +348,55 @@ export function ZoneEditor({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ul className="flex flex-col gap-1.5">
+            <ItemGroup className="gap-1.5">
               {zones.map((zone) => (
-                <li
-                  key={zone.id}
-                  className="flex items-center justify-between gap-2 rounded border border-border px-2.5 py-1.5"
-                >
-                  <button
-                    type="button"
-                    className="min-w-0 flex-1 truncate text-left text-xs text-foreground hover:text-info"
-                    onClick={() => handleSelectZone(zone.id)}
-                  >
-                    {zone.name}
-                  </button>
-                  <Switch
-                    checked={zone.enabled}
-                    onCheckedChange={(checked) => onToggleZone(zone.id, checked)}
-                    aria-label={`Habilitar ${zone.name}`}
-                  />
-                </li>
+                <Item key={zone.id} variant="outline" size="sm">
+                  <ItemContent>
+                    <button
+                      type="button"
+                      className="min-w-0 flex-1 truncate text-left text-xs text-foreground hover:text-info"
+                      onClick={() => handleSelectZone(zone.id)}
+                    >
+                      {zone.name}
+                    </button>
+                  </ItemContent>
+                  <ItemActions>
+                    <Switch
+                      checked={zone.enabled}
+                      onCheckedChange={(checked) => onToggleZone(zone.id, checked)}
+                      aria-label={`Habilitar ${zone.name}`}
+                    />
+                  </ItemActions>
+                </Item>
               ))}
-            </ul>
+              {zones.length === 0 ? (
+                <p className="px-1 text-xs text-muted-foreground">Sin zonas configuradas.</p>
+              ) : null}
+            </ItemGroup>
             <p className="mt-3 mb-1.5 text-xs font-medium text-muted-foreground">
               Líneas virtuales
             </p>
-            <ul className="flex flex-col gap-1.5">
+            <ItemGroup className="gap-1.5">
               {lines.map((line) => (
-                <li
-                  key={line.id}
-                  className="flex items-center justify-between gap-2 rounded border border-border px-2.5 py-1.5"
-                >
-                  <span className="min-w-0 flex-1 truncate text-xs text-foreground">
-                    {line.name}
-                  </span>
-                  <Switch
-                    checked={line.enabled}
-                    onCheckedChange={(checked) => onToggleLine(line.id, checked)}
-                    aria-label={`Habilitar ${line.name}`}
-                  />
-                </li>
+                <Item key={line.id} variant="outline" size="sm">
+                  <ItemContent>
+                    <ItemTitle className="truncate text-xs font-normal text-foreground">
+                      {line.name}
+                    </ItemTitle>
+                  </ItemContent>
+                  <ItemActions>
+                    <Switch
+                      checked={line.enabled}
+                      onCheckedChange={(checked) => onToggleLine(line.id, checked)}
+                      aria-label={`Habilitar ${line.name}`}
+                    />
+                  </ItemActions>
+                </Item>
               ))}
               {lines.length === 0 ? (
-                <li className="px-1 text-xs text-muted-foreground">Sin líneas configuradas.</li>
+                <p className="px-1 text-xs text-muted-foreground">Sin líneas configuradas.</p>
               ) : null}
-            </ul>
+            </ItemGroup>
           </CardContent>
         </Card>
       </div>

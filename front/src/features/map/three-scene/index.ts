@@ -1,5 +1,6 @@
 import { planToWorld } from '@/data/plan';
 import type { Camera } from '@/domain/types';
+import gsap from 'gsap';
 import {
   ACESFilmicToneMapping,
   AmbientLight,
@@ -18,8 +19,8 @@ import {
 } from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { computeBounds, frameScene } from './lib/framing';
+import { timeOfDayAt, type TimeOfDay } from './lib/lighting';
 import { buildMarkers, type MarkerHandles } from './lib/markers';
-import { FOG_COLOR, SKY_COLOR } from './lib/palette';
 import { createPost, type PostHandles } from './lib/post';
 import { buildWorld, type WorldHandles } from './lib/world';
 
@@ -30,32 +31,44 @@ import { buildWorld, type WorldHandles } from './lib/world';
  * construcción de la escena, el control orbital, el raycasting y el ciclo de
  * render quedan privados detrás de este punto de entrada.
  */
+
+/** Encuadres disponibles: general, por sector o sobre una cámara concreta. */
+export type CameraPreset = 'general' | 'sector' | 'camera';
+
 export interface PerimeterSceneOptions {
   cameras: readonly Camera[];
   onSelect: (cameraId: string) => void;
   /** Desactiva la rotación automática (movimiento reducido del sistema). */
   reducedMotion?: boolean;
+  /** Hora inicial de la escena (0–24). */
+  hour?: number;
 }
 
 export interface PerimeterSceneHandle {
   dispose: () => void;
   setSelected: (cameraId: string | null) => void;
   updateCameras: (cameras: readonly Camera[]) => void;
-  focusCamera: (cameraId: string) => void;
+  focusCamera: (cameraId: string, preset?: CameraPreset) => void;
+  /** Cambia la iluminación de la escena según la hora simulada. */
+  setTimeOfDay: (hour: number) => void;
+  /** Hora aplicada a la escena. */
+  getTimeOfDay: () => number;
 }
 
 /** Segundos de inactividad antes de retomar la rotación automática. */
 const IDLE_RESUME_SECONDS = 7;
 /** Velocidad de rotación automática (grados por segundo). */
 const AUTO_ROTATE_SPEED = 0.32;
+/** Duración del vuelo hasta el encuadre solicitado. */
+const FLY_DURATION = 1.15;
 
 export function createPerimeterScene(
   container: HTMLElement,
   options: PerimeterSceneOptions,
 ): PerimeterSceneHandle {
   const scene = new Scene();
-  scene.background = new Color(SKY_COLOR);
-  scene.fog = new Fog(FOG_COLOR, 120, 420);
+  scene.background = new Color(0x101821);
+  scene.fog = new Fog(0x121a24, 120, 420);
 
   const renderer = new WebGLRenderer({
     antialias: true,
@@ -139,6 +152,9 @@ export function createPerimeterScene(
   controls.minDistance = framing.minDistance;
   controls.maxDistance = framing.maxDistance;
   controls.update();
+
+  const generalTarget = framing.target.clone();
+  const generalPosition = framing.position.clone();
 
   /* Entrada: raycasting sobre los marcadores. */
   const raycaster = new Raycaster();
@@ -273,8 +289,137 @@ export function createPerimeterScene(
 
   renderer.setAnimationLoop(render);
 
+  /* ------------------------------------------------------------------ */
+  /* Vuelo a encuadre (GSAP)                                            */
+  /* ------------------------------------------------------------------ */
+
+  /** Tween activo de vuelo: se cancela si llega otro encargo. */
+  let flyTween: gsap.core.Tween | null = null;
+
+  function flyTo(target: Vector3, position: Vector3): void {
+    flyTween?.kill();
+    controls.autoRotate = false;
+
+    if (reducedMotion) {
+      camera.position.copy(position);
+      controls.target.copy(target);
+      controls.update();
+      return;
+    }
+
+    flyTween = gsap.to(camera.position, {
+      x: position.x,
+      y: position.y,
+      z: position.z,
+      duration: FLY_DURATION,
+      ease: 'power3.inOut',
+      overwrite: true,
+    });
+    gsap.to(controls.target, {
+      x: target.x,
+      y: target.y,
+      z: target.z,
+      duration: FLY_DURATION,
+      ease: 'power3.inOut',
+      overwrite: true,
+      onUpdate: () => controls.update(),
+    });
+  }
+
+  /** Encuadre asociado a una cámara según el preset solicitado. */
+  function framingFor(
+    target: Camera,
+    preset: CameraPreset,
+  ): { target: Vector3; position: Vector3 } {
+    const world = planToWorld(target.position);
+
+    if (preset === 'general') {
+      return { target: generalTarget.clone(), position: generalPosition.clone() };
+    }
+
+    if (preset === 'sector') {
+      const siblings = options.cameras.filter((camera) => camera.sectorId === target.sectorId);
+      const centroid = siblings.reduce(
+        (acc, camera) => {
+          const position = planToWorld(camera.position);
+          acc.x += position.x / siblings.length;
+          acc.z += position.z / siblings.length;
+          return acc;
+        },
+        { x: 0, z: 0 },
+      );
+      const focus = new Vector3(centroid.x, 1.5, centroid.z);
+      const distance = Math.max(26, bounds.radius * 0.75);
+      const position = new Vector3(
+        focus.x + distance * 0.55,
+        focus.y + distance * 0.62,
+        focus.z + distance * 0.62,
+      );
+      return { target: focus, position };
+    }
+
+    // Preset de cámara: se mira el equipo desde atrás, sobre su cono.
+    const focus = new Vector3(world.x, 2.2, world.z);
+    const rad = (target.heading * Math.PI) / 180;
+    const dirX = Math.cos(rad);
+    const dirZ = Math.sin(rad);
+    const position = new Vector3(world.x - dirX * 11, 6.4, world.z - dirZ * 11);
+    return { target: focus, position };
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Iluminación por hora                                               */
+  /* ------------------------------------------------------------------ */
+
+  let currentHour = options.hour ?? 22;
+
+  function applyTimeOfDay(hour: number): void {
+    currentHour = hour;
+    const preset: TimeOfDay = timeOfDayAt(hour);
+
+    scene.background = new Color(preset.sky);
+    const fog = scene.fog as Fog;
+    fog.color = new Color(preset.fog);
+    fog.near = preset.fogNear;
+    fog.far = preset.fogFar;
+
+    const elevation = (preset.sunElevation * Math.PI) / 180;
+    const azimuth = (preset.sunAzimuth * Math.PI) / 180;
+    const distance = bounds.radius * 1.6;
+    sun.position.set(
+      Math.cos(elevation) * Math.sin(azimuth) * distance,
+      Math.sin(elevation) * distance,
+      Math.cos(elevation) * Math.cos(azimuth) * distance,
+    );
+    sun.color.setHex(preset.sunColor);
+    sun.intensity = preset.sunIntensity;
+    sun.shadow.intensity = preset.sunIntensity > 1 ? 0.78 : 0.28;
+
+    hemisphere.color.setHex(preset.hemiSky);
+    hemisphere.groundColor.setHex(preset.hemiGround);
+    hemisphere.intensity = preset.hemiIntensity;
+
+    ambient.color.setHex(preset.ambientColor);
+    ambient.intensity = preset.ambientIntensity;
+
+    fill.color.setHex(preset.fillColor);
+    fill.intensity = preset.fillIntensity;
+    fill.position.set(
+      -Math.cos(elevation) * Math.sin(azimuth) * bounds.radius,
+      Math.sin(elevation) * bounds.radius * 0.6,
+      -Math.cos(elevation) * Math.cos(azimuth) * bounds.radius,
+    );
+
+    renderer.toneMappingExposure = preset.exposure;
+    world.setLampIntensity(preset.lampIntensity);
+    markers.setNightFactor(preset.key === 'noche' ? 1 : preset.key === 'crepusculo' ? 0.5 : 0);
+  }
+
+  applyTimeOfDay(currentHour);
+
   return {
     dispose: () => {
+      flyTween?.kill();
       renderer.setAnimationLoop(null);
       if (idleTimer !== null) window.clearTimeout(idleTimer);
       intersection.disconnect();
@@ -296,14 +441,15 @@ export function createPerimeterScene(
       markers.setSelected(cameraId);
     },
     updateCameras: (cameras) => markers.updateStatuses(cameras),
-    focusCamera: (cameraId) => {
+    focusCamera: (cameraId, preset = 'camera') => {
       const target = options.cameras.find((camera) => camera.id === cameraId);
       if (!target) return;
-      const position = planToWorld(target.position);
-      const focus = new Vector3(position.x, 2, position.z);
-      controls.target.lerp(focus, 0.6);
-      const offset = camera.position.clone().sub(controls.target);
-      camera.position.copy(controls.target).add(offset);
+      const framing = framingFor(target, preset);
+      flyTo(framing.target, framing.position);
     },
+    setTimeOfDay: (hour) => {
+      applyTimeOfDay(hour);
+    },
+    getTimeOfDay: () => currentHour,
   };
 }

@@ -1,6 +1,8 @@
 'use client';
 
 import { EvidenceFrame } from '@/components/camera-feed';
+import { Callout } from '@/components/callout';
+import { DetailList } from '@/components/detail-list';
 import { PageHeader } from '@/components/page-header';
 import {
   CapabilityBadge,
@@ -8,9 +10,28 @@ import {
   IncidentStatusBadge,
   SeverityBadge,
 } from '@/components/status-badge';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from '@/components/ui/empty';
 import { Textarea } from '@/components/ui/textarea';
 import { CAMERAS } from '@/data/cameras';
 import { CURRENT_USER, CURRENT_USER_ID, USERS } from '@/data/users';
@@ -73,14 +94,27 @@ export function IncidentDetailView({ incidentId }: { incidentId: string }) {
       <div className="flex flex-col gap-4">
         <PageHeader
           title="Incidente no encontrado"
-          description={`El identificador ${incidentId} no existe en el registro simulado.`}
+          description={`El identificador ${incidentId} no existe en el registro de incidentes.`}
         />
-        <Button asChild variant="outline" className="w-fit">
-          <Link href="/incidentes">
-            <ArrowLeft />
-            Volver al listado
-          </Link>
-        </Button>
+        <Empty className="border border-border/60">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <History />
+            </EmptyMedia>
+            <EmptyTitle>Sin incidente {incidentId}</EmptyTitle>
+            <EmptyDescription>
+              El identificador no existe en el registro de incidentes.
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Button asChild variant="outline">
+              <Link href="/incidentes">
+                <ArrowLeft />
+                Volver al listado
+              </Link>
+            </Button>
+          </EmptyContent>
+        </Empty>
       </div>
     );
   }
@@ -167,14 +201,15 @@ export function IncidentDetailView({ incidentId }: { incidentId: string }) {
             const isCurrent = incident.status === status;
             return (
               <div key={status} className="flex items-center gap-2">
-                <span
-                  className={`rounded-md px-2 py-1 text-xs font-medium ${
+                <Badge
+                  variant="outline"
+                  className={
                     isCurrent
                       ? 'bg-info/15 text-info ring-1 ring-info/40 ring-inset'
                       : reached
                         ? 'bg-normal/12 text-normal'
                         : 'bg-muted text-muted-foreground'
-                  }`}
+                  }
                 >
                   {status === 'nuevo'
                     ? 'Nuevo'
@@ -185,7 +220,7 @@ export function IncidentDetailView({ incidentId }: { incidentId: string }) {
                         : status === 'en_atencion'
                           ? 'En atención'
                           : 'Resuelto'}
-                </span>
+                </Badge>
                 {index < STATUS_FLOW.length - 1 ? (
                   <span className="h-px w-5 bg-border" aria-hidden="true" />
                 ) : null}
@@ -193,9 +228,9 @@ export function IncidentDetailView({ incidentId }: { incidentId: string }) {
             );
           })}
           {incident.status === 'descartado' ? (
-            <span className="rounded-md bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
+            <Badge variant="outline" className="bg-muted text-muted-foreground">
               Descartado
-            </span>
+            </Badge>
           ) : null}
         </div>
       </Card>
@@ -221,9 +256,17 @@ export function IncidentDetailView({ incidentId }: { incidentId: string }) {
                   />
                 </div>
               ) : (
-                <p className="py-8 text-center text-sm text-muted-foreground">
-                  Cámara no disponible para capturar evidencia.
-                </p>
+                <Empty className="border border-border/60">
+                  <EmptyHeader>
+                    <EmptyMedia variant="icon">
+                      <FileVideo />
+                    </EmptyMedia>
+                    <EmptyTitle>Sin evidencia disponible</EmptyTitle>
+                    <EmptyDescription>
+                      Cámara no disponible para capturar evidencia.
+                    </EmptyDescription>
+                  </EmptyHeader>
+                </Empty>
               )}
             </CardContent>
           </Card>
@@ -239,28 +282,30 @@ export function IncidentDetailView({ incidentId }: { incidentId: string }) {
             </CardHeader>
             <CardContent>
               {incident.hasVideoClip ? (
-                <div className="flex items-center gap-3 rounded-lg border border-border bg-muted/40 px-3 py-3">
-                  <PlayCircle className="size-8 shrink-0 text-info" />
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium">
-                      {incident.id} · {incident.cameraId} · {incident.clipDurationSec} s
-                    </p>
-                    <div className="mt-2 h-1 overflow-hidden rounded-full bg-muted">
-                      <div className="h-full w-[38%] rounded-full bg-info" />
+                <Callout tone="info">
+                  <div className="flex items-center gap-3">
+                    <PlayCircle className="size-8 shrink-0 text-info" />
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium">
+                        {incident.id} · {incident.cameraId} · {incident.clipDurationSec} s
+                      </p>
+                      <div className="mt-2 h-1 overflow-hidden rounded-full bg-muted">
+                        <div className="h-full w-[38%] rounded-full bg-info" />
+                      </div>
                     </div>
+                    <Badge
+                      variant="outline"
+                      className="border-border bg-background text-muted-foreground"
+                    >
+                      <FileVideo className="size-3" />
+                      Origen: consola
+                    </Badge>
                   </div>
-                  <Badge
-                    variant="outline"
-                    className="border-border bg-background text-muted-foreground"
-                  >
-                    <FileVideo className="size-3" />
-                    Simulado
-                  </Badge>
-                </div>
+                </Callout>
               ) : (
-                <p className="text-sm text-muted-foreground">
-                  El evento seoriginó en una falla de cámara; no se grabó clip.
-                </p>
+                <Callout tone="warning">
+                  El evento se originó en una falla de cámara; no se grabó clip.
+                </Callout>
               )}
             </CardContent>
           </Card>
@@ -270,24 +315,26 @@ export function IncidentDetailView({ incidentId }: { incidentId: string }) {
               <CardTitle>Datos del evento</CardTitle>
             </CardHeader>
             <CardContent>
-              <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-xs md:grid-cols-3">
-                <Detail label="Cámara" value={`${incident.cameraId} · ${camera?.name ?? '—'}`} />
-                <Detail label="Zona" value={zone?.name ?? incident.zoneId} />
-                <Detail label="Sector" value={incident.sectorId} />
-                <Detail label="Fecha y hora" value={formatDateTime(incident.occurredAt)} />
-                <Detail
-                  label="Confianza del modelo"
-                  value={
-                    incident.confidence === null
-                      ? 'No aplica'
-                      : `${Math.round(incident.confidence * 100)}%`
-                  }
-                />
-                <Detail label="Tipo de objeto" value={incident.objectType} />
-                <Detail label="Objetos detectados" value={String(incident.objectCount)} />
-                <Detail label="Responsable" value={assignee?.name ?? 'Sin asignar'} />
-                <Detail label="Origen" value={incident.simulated ? 'Simulación' : 'Motor de IA'} />
-              </dl>
+              <DetailList
+                columns={2}
+                items={[
+                  { label: 'Cámara', value: `${incident.cameraId} · ${camera?.name ?? '—'}` },
+                  { label: 'Zona', value: zone?.name ?? incident.zoneId },
+                  { label: 'Sector', value: incident.sectorId },
+                  { label: 'Fecha y hora', value: formatDateTime(incident.occurredAt) },
+                  {
+                    label: 'Confianza del modelo',
+                    value:
+                      incident.confidence === null
+                        ? 'No aplica'
+                        : `${Math.round(incident.confidence * 100)}%`,
+                  },
+                  { label: 'Tipo de objeto', value: incident.objectType },
+                  { label: 'Objetos detectados', value: String(incident.objectCount) },
+                  { label: 'Responsable', value: assignee?.name ?? 'Sin asignar' },
+                  { label: 'Origen', value: incident.simulated ? 'Consola de operador' : 'Motor de IA' },
+                ]}
+              />
             </CardContent>
           </Card>
         </div>
@@ -300,31 +347,61 @@ export function IncidentDetailView({ incidentId }: { incidentId: string }) {
             </CardHeader>
             <CardContent>
               <div className="flex flex-col gap-2">
-                {actions.map((action) => (
-                  <Button
-                    key={action.target}
-                    variant={
-                      action.intent === 'confirm'
-                        ? 'default'
-                        : action.intent === 'discard'
-                          ? 'destructive'
-                          : 'outline'
-                    }
-                    onClick={() => handleTransition(action.target)}
-                    data-testid={`transition-${action.target}`}
-                  >
-                    {action.intent === 'confirm' ? <CheckCircle2 className="size-4" /> : null}
-                    {action.intent === 'discard' ? <XCircle className="size-4" /> : null}
-                    {action.intent === 'advance' ? <History className="size-4" /> : null}
-                    {action.intent === 'review' ? <History className="size-4" /> : null}
-                    {action.intent === 'resolve' ? <CheckCircle2 className="size-4" /> : null}
-                    {action.label}
-                  </Button>
-                ))}
+                {actions.map((action) =>
+                  action.intent === 'discard' ? (
+                    <AlertDialog key={action.target}>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="destructive" data-testid={`transition-${action.target}`}>
+                          <XCircle className="size-4" />
+                          {action.label}
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent className="max-w-md!">
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Descartar la detección</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            El incidente {incident.id} pasará a «Descartado». Queda registrado en el
+                            histórico del turno y el operador puede reabrir la revisión.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                          <AlertDialogAction
+                            variant="destructive"
+                            onClick={() => handleTransition(action.target)}
+                          >
+                            Descartar detección
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  ) : (
+                    <Button
+                      key={action.target}
+                      variant={action.intent === 'confirm' ? 'default' : 'outline'}
+                      onClick={() => handleTransition(action.target)}
+                      data-testid={`transition-${action.target}`}
+                    >
+                      {action.intent === 'confirm' ? <CheckCircle2 className="size-4" /> : null}
+                      {action.intent === 'advance' ? <History className="size-4" /> : null}
+                      {action.intent === 'review' ? <History className="size-4" /> : null}
+                      {action.intent === 'resolve' ? <CheckCircle2 className="size-4" /> : null}
+                      {action.label}
+                    </Button>
+                  ),
+                )}
                 {actions.length === 0 ? (
-                  <p className="rounded-lg border border-dashed border-border px-3 py-4 text-center text-sm text-muted-foreground">
-                    El incidente está en un estado terminal. No admite más transiciones.
-                  </p>
+                  <Empty className="border border-border/60">
+                    <EmptyHeader>
+                      <EmptyMedia variant="icon">
+                        <CheckCircle2 />
+                      </EmptyMedia>
+                      <EmptyTitle>Estado terminal</EmptyTitle>
+                      <EmptyDescription>
+                        El incidente está en un estado terminal. No admite más transiciones.
+                      </EmptyDescription>
+                    </EmptyHeader>
+                  </Empty>
                 ) : null}
 
                 <Button
@@ -352,28 +429,35 @@ export function IncidentDetailView({ incidentId }: { incidentId: string }) {
               <CardDescription>{incident.notes.length} registros del turno.</CardDescription>
             </CardHeader>
             <CardContent>
-              <ul className="mb-3 flex flex-col gap-2">
-                {incident.notes.length === 0 ? (
-                  <li className="rounded-lg border border-dashed border-border px-3 py-4 text-center text-sm text-muted-foreground">
-                    Sin observaciones registradas.
-                  </li>
-                ) : (
-                  incident.notes.map((entry, index) => {
+              {incident.notes.length === 0 ? (
+                <Empty className="mb-3 border border-border/60">
+                  <EmptyHeader>
+                    <EmptyMedia variant="icon">
+                      <MessageSquarePlus />
+                    </EmptyMedia>
+                    <EmptyTitle>Sin observaciones</EmptyTitle>
+                    <EmptyDescription>
+                      Sin observaciones registradas en este turno.
+                    </EmptyDescription>
+                  </EmptyHeader>
+                </Empty>
+              ) : (
+                <ul className="mb-3 flex flex-col gap-2">
+                  {incident.notes.map((entry, index) => {
                     const author = USERS.find((user) => user.id === entry.authorId);
                     return (
-                      <li
-                        key={`${entry.at}-${index}`}
-                        className="rounded-lg border border-border px-3 py-2"
-                      >
-                        <p className="text-xs text-foreground">{entry.text}</p>
-                        <p className="mt-1 text-[11px] text-muted-foreground">
-                          {author?.name ?? 'Operador'} · {formatDateTime(entry.at)}
-                        </p>
+                      <li key={`${entry.at}-${index}`}>
+                        <Callout tone="neutral">
+                          <p className="text-xs text-foreground">{entry.text}</p>
+                          <p className="mt-1 text-[11px] text-muted-foreground">
+                            {author?.name ?? 'Operador'} · {formatDateTime(entry.at)}
+                          </p>
+                        </Callout>
                       </li>
                     );
-                  })
-                )}
-              </ul>
+                  })}
+                </ul>
+              )}
               <Textarea
                 value={note}
                 onChange={(event) => setNote(event.target.value)}
@@ -395,15 +479,6 @@ export function IncidentDetailView({ incidentId }: { incidentId: string }) {
           </Card>
         </div>
       </div>
-    </div>
-  );
-}
-
-function Detail({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <dt className="text-muted-foreground">{label}</dt>
-      <dd className="mt-0.5 font-medium break-words text-foreground">{value}</dd>
     </div>
   );
 }

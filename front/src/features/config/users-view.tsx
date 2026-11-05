@@ -1,5 +1,6 @@
 'use client';
 
+import { DataTable, createDataTableColumns } from '@/components/data-table';
 import { PageHeader } from '@/components/page-header';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,16 +16,18 @@ import {
 import { USERS } from '@/data/users';
 import { formatDateTime } from '@/domain/clock';
 import { USER_ROLE_LABEL, USER_ROLE_SUMMARY } from '@/domain/labels';
-import type { UserRole } from '@/domain/types';
+import type { User, UserRole } from '@/domain/types';
 import { useActivityStore } from '@/store/activity-store';
 import { BellRing, History, ShieldCheck } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { cn } from 'cn';
 
 /**
  * Administración de usuarios y roles (módulo 8 del pliego).
  *
- * Incluye el registro de operadores, la matriz de permisos por rol, la
- * configuración de notificaciones y el historial de acciones del turno.
+ * Incluye el registro de operadores (data-table con orden y filtros), la
+ * matriz de permisos por rol (tabla densa, sin paginar), la configuración de
+ * notificaciones y el historial de acciones del turno.
  */
 const ROLES: readonly UserRole[] = ['administrador', 'supervisor', 'operador', 'consulta'];
 
@@ -35,7 +38,7 @@ const PERMISSION_MATRIX: readonly { label: string; values: readonly boolean[] }[
   { label: 'Confirmar y descartar incidentes', values: [true, true, true, false] },
   { label: 'Cerrar incidentes', values: [true, true, true, false] },
   { label: 'Ver analítica y reportes', values: [true, true, true, true] },
-  { label: 'Simular incidentes (demo)', values: [true, true, true, false] },
+  { label: 'Alta manual de incidentes', values: [true, true, true, false] },
 ];
 
 const NOTIFICATION_CHANNELS = [
@@ -50,6 +53,71 @@ export function UsersView() {
   const [channels, setChannels] = useState<Record<string, boolean>>(() =>
     Object.fromEntries(NOTIFICATION_CHANNELS.map((channel) => [channel.id, channel.enabled])),
   );
+
+  const columns = useMemo(() => {
+    const helper = createDataTableColumns<User>();
+
+    return helper.columns([
+      helper.accessor((user) => user.name, {
+        id: 'name',
+        header: 'Usuario',
+        cell: ({ row }) => (
+          <>
+            <span className="block font-medium">{row.original.name}</span>
+            <span className="block text-xs text-muted-foreground">{row.original.email}</span>
+          </>
+        ),
+      }),
+      helper.accessor((user) => user.role, {
+        id: 'role',
+        header: 'Rol',
+        filterFn: 'arrHas',
+        cell: ({ row }) => (
+          <Badge variant="outline" className="border-border bg-muted text-muted-foreground">
+            {USER_ROLE_LABEL[row.original.role]}
+          </Badge>
+        ),
+      }),
+      helper.accessor((user) => user.shift, {
+        id: 'shift',
+        header: 'Turno',
+        cell: ({ row }) => (
+          <span className="text-xs text-muted-foreground">{row.original.shift}</span>
+        ),
+      }),
+      helper.accessor((user) => (user.active ? 'activo' : 'inactivo'), {
+        id: 'active',
+        header: 'Estado',
+        filterFn: 'arrHas',
+        sortFn: (rowA, rowB, columnId) => {
+          const a = rowA.getValue<string>(columnId) === 'activo' ? 0 : 1;
+          const b = rowB.getValue<string>(columnId) === 'activo' ? 0 : 1;
+          return a - b;
+        },
+        cell: ({ row }) => (
+          <Badge
+            variant="outline"
+            className={
+              row.original.active
+                ? 'border-normal/40 bg-normal/10 text-normal'
+                : 'border-border bg-muted text-muted-foreground'
+            }
+          >
+            {row.original.active ? 'Activo' : 'Inactivo'}
+          </Badge>
+        ),
+      }),
+      helper.accessor((user) => Date.parse(user.lastActivity), {
+        id: 'lastActivity',
+        header: 'Última actividad',
+        cell: ({ row }) => (
+          <span className="text-xs text-muted-foreground tabular-nums">
+            {formatDateTime(row.original.lastActivity)}
+          </span>
+        ),
+      }),
+    ]);
+  }, []);
 
   return (
     <div className="flex flex-col gap-5">
@@ -68,51 +136,34 @@ export function UsersView() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Usuario</TableHead>
-                  <TableHead className="w-[140px]">Rol</TableHead>
-                  <TableHead className="w-[180px]">Turno</TableHead>
-                  <TableHead className="w-[100px]">Estado</TableHead>
-                  <TableHead className="w-[150px]">Última actividad</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {USERS.map((user) => (
-                  <TableRow key={user.id}>
-                    <TableCell>
-                      <span className="block font-medium">{user.name}</span>
-                      <span className="block text-xs text-muted-foreground">{user.email}</span>
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant="outline"
-                        className="border-border bg-muted text-muted-foreground"
-                      >
-                        {USER_ROLE_LABEL[user.role]}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-xs text-muted-foreground">{user.shift}</TableCell>
-                    <TableCell>
-                      <Badge
-                        variant="outline"
-                        className={
-                          user.active
-                            ? 'border-normal/40 bg-normal/10 text-normal'
-                            : 'border-border bg-muted text-muted-foreground'
-                        }
-                      >
-                        {user.active ? 'Activo' : 'Inactivo'}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-xs text-muted-foreground tabular-nums">
-                      {formatDateTime(user.lastActivity)}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <DataTable
+              data={USERS}
+              columns={columns}
+              getRowId={(user) => user.id}
+              searchText={(user) => `${user.name} ${user.email} ${user.shift} ${user.role}`}
+              searchPlaceholder="Buscar por nombre, correo o turno…"
+              filters={[
+                {
+                  columnId: 'role',
+                  label: 'Rol',
+                  options: ROLES.map((role) => ({
+                    value: role,
+                    label: USER_ROLE_LABEL[role],
+                  })),
+                },
+                {
+                  columnId: 'active',
+                  label: 'Estado',
+                  options: [
+                    { value: 'activo', label: 'Activo' },
+                    { value: 'inactivo', label: 'Inactivo' },
+                  ],
+                },
+              ]}
+              pageSize={10}
+              noun="usuarios"
+              emptyMessage="No hay usuarios que coincidan con los filtros aplicados."
+            />
           </CardContent>
         </Card>
 
@@ -152,12 +203,7 @@ export function UsersView() {
                         <TableCell className="text-xs">{permission.label}</TableCell>
                         {permission.values.map((allowed, index) => (
                           <TableCell key={index} className="text-center">
-                            <span
-                              className={`inline-block size-2 rounded-full ${
-                                allowed ? 'bg-normal' : 'bg-muted-foreground/30'
-                              }`}
-                              aria-label={allowed ? 'Permitido' : 'Denegado'}
-                            />
+                            <PermissionMark allowed={allowed} />
                           </TableCell>
                         ))}
                       </TableRow>
@@ -233,5 +279,25 @@ export function UsersView() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+/**
+ * Marca de permiso.
+ *
+ * El estado se codifica con **forma además de color**: punto lleno para lo
+ * permitido y punto hueco (contorno) para lo denegado, de modo que la matriz
+ * se lea sin depender del color.
+ */
+function PermissionMark({ allowed }: { allowed: boolean }) {
+  return (
+    <span
+      role="img"
+      aria-label={allowed ? 'Permitido' : 'Denegado'}
+      className={cn(
+        'inline-block size-2 rounded-full',
+        allowed ? 'bg-normal' : 'border border-muted-foreground/60 bg-transparent',
+      )}
+    />
   );
 }

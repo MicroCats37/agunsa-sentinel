@@ -5,18 +5,30 @@ import { PageHeader } from '@/components/page-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+  Command,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+} from '@/components/ui/command';
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from '@/components/ui/empty';
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
+import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { CAMERAS } from '@/data/cameras';
 import { SECTORS } from '@/data/sectors';
-import type { Camera, IlluminationPreference } from '@/domain/types';
+import type { Camera, SceneHour } from '@/domain/types';
 import { useSimulationFeed } from '@/features/simulation/use-simulation-feed';
+import { CameraDetailSheet } from '@/features/monitoring/camera-detail-sheet';
 import { useCamerasStore } from '@/store/cameras-store';
 import { useUiStore, type GridLayout } from '@/store/ui-store';
 import {
@@ -30,11 +42,12 @@ import {
   Maximize,
   Move,
   RotateCcw,
+  Search,
+  SlidersHorizontal,
   Square,
   Volume2,
   ZoomIn,
 } from 'lucide-react';
-import Link from 'next/link';
 import { useMemo, useRef, useState, type ReactNode } from 'react';
 import { toast } from 'sonner';
 
@@ -57,6 +70,13 @@ const LAYOUTS: readonly { value: GridLayout; label: string; icon: typeof Square 
 
 type StatusFilter = 'todas' | 'alerta' | 'fallando' | 'activa';
 
+const STATUS_FILTERS: readonly { value: StatusFilter; label: string }[] = [
+  { value: 'todas', label: 'Todos los estados' },
+  { value: 'alerta', label: 'Con alerta' },
+  { value: 'fallando', label: 'Con falla' },
+  { value: 'activa', label: 'Activas' },
+];
+
 export function MonitoringView() {
   const overrides = useCamerasStore((state) => state.overrides);
   const highlightedCameraId = useCamerasStore((state) => state.highlightedCameraId);
@@ -66,11 +86,17 @@ export function MonitoringView() {
   const setMonitoringPage = useUiStore((state) => state.setMonitoringPage);
   const sectorFilter = useUiStore((state) => state.sectorFilter);
   const setSectorFilter = useUiStore((state) => state.setSectorFilter);
-  const illumination = useUiStore((state) => state.illumination);
-  const setIllumination = useUiStore((state) => state.setIllumination);
+  const sceneHour = useUiStore((state) => state.sceneHour);
+  const setSceneHour = useUiStore((state) => state.setSceneHour);
 
   const [query, setQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('todas');
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [detailCameraId, setDetailCameraId] = useState<string | null>(null);
+
+  function onOpenDetail(cameraId: string): void {
+    setDetailCameraId(cameraId);
+  }
 
   const sectorNameById = useMemo(
     () => new Map(SECTORS.map((sector) => [sector.id, sector.name] as const)),
@@ -117,6 +143,8 @@ export function MonitoringView() {
 
   const alertCount = cameras.filter((camera) => camera.status === 'alerta').length;
 
+  const activeFilterCount = (sectorFilter !== 'todos' ? 1 : 0) + (statusFilter !== 'todas' ? 1 : 0);
+
   return (
     <div className="flex flex-col gap-5">
       <PageHeader
@@ -126,90 +154,126 @@ export function MonitoringView() {
       />
 
       <Card size="sm">
-        <div className="flex flex-wrap items-center gap-3 px-(--card-spacing) py-(--card-spacing)">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-muted-foreground">Sector</span>
-            <Select value={sectorFilter} onValueChange={setSectorFilter}>
-              <SelectTrigger className="w-[200px]" aria-label="Filtrar por sector">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="todos">Todos los sectores</SelectItem>
-                {SECTORS.map((sector) => (
-                  <SelectItem key={sector.id} value={sector.id}>
-                    {sector.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+        <div className="flex flex-wrap items-center gap-2 px-(--card-spacing) py-(--card-spacing)">
+          <InputGroup className="w-[220px]">
+            <InputGroupAddon>
+              <Search className="size-4" />
+            </InputGroupAddon>
+            <InputGroupInput
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Buscar por ID o nombre…"
+              aria-label="Buscar cámara"
+            />
+          </InputGroup>
 
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-muted-foreground">Estado</span>
-            <Select
-              value={statusFilter}
-              onValueChange={(value) => setStatusFilter(value as StatusFilter)}
-            >
-              <SelectTrigger className="w-[160px]" aria-label="Filtrar por estado">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="todas">Todos</SelectItem>
-                <SelectItem value="alerta">Con alerta</SelectItem>
-                <SelectItem value="fallando">Con falla</SelectItem>
-                <SelectItem value="activa">Activas</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          {/*
+            Filtros combinables: sector y estado viven en el mismo panel para
+            que el operador refine sin recorrer selects sueltos.
+          */}
+          <Popover open={filtersOpen} onOpenChange={setFiltersOpen}>
+            <PopoverTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-1.5" data-testid="monitor-filters">
+                <SlidersHorizontal className="size-3.5" />
+                Filtros
+                {activeFilterCount > 0 ? (
+                  <Badge variant="negative" className="ml-0.5">
+                    {activeFilterCount}
+                  </Badge>
+                ) : null}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent align="start" className="w-[320px] p-0">
+              <Command>
+                <CommandInput placeholder="Buscar sector o estado…" />
+                <CommandList>
+                  <CommandGroup heading="Sector">
+                    <CommandItem
+                      value="sector todos"
+                      onSelect={() => {
+                        setSectorFilter('todos');
+                        setFiltersOpen(false);
+                      }}
+                      data-checked={sectorFilter === 'todos' ? 'true' : undefined}
+                    >
+                      Todos los sectores
+                    </CommandItem>
+                    {SECTORS.map((sector) => (
+                      <CommandItem
+                        key={sector.id}
+                        value={`sector ${sector.id} ${sector.name}`}
+                        onSelect={() => {
+                          setSectorFilter(sector.id);
+                          setFiltersOpen(false);
+                        }}
+                        data-checked={sectorFilter === sector.id ? 'true' : undefined}
+                      >
+                        {sector.name}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                  <CommandSeparator />
+                  <CommandGroup heading="Estado">
+                    {STATUS_FILTERS.map((filter) => (
+                      <CommandItem
+                        key={filter.value}
+                        value={`estado ${filter.value} ${filter.label}`}
+                        onSelect={() => {
+                          setStatusFilter(filter.value);
+                          setFiltersOpen(false);
+                        }}
+                        data-checked={statusFilter === filter.value ? 'true' : undefined}
+                      >
+                        {filter.label}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
 
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-muted-foreground">Iluminación</span>
-            <Select
-              value={illumination}
-              onValueChange={(value) => setIllumination(value as IlluminationPreference)}
-            >
-              <SelectTrigger className="w-[150px]" aria-label="Preferencia de iluminación">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="auto">Automática (reloj)</SelectItem>
-                <SelectItem value="dia">Vista diurna</SelectItem>
-                <SelectItem value="noche">Vista nocturna (IR)</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          <NativeSelect
+            value={sceneHour === null ? 'auto' : String(sceneHour)}
+            onChange={(event) =>
+              setSceneHour(event.target.value === 'auto' ? null : Number(event.target.value))
+            }
+            aria-label="Hora de la escena"
+            className="w-[168px]"
+          >
+            <NativeSelectOption value="auto">Hora · automática</NativeSelectOption>
+            <NativeSelectOption value="9">Hora · 09:00</NativeSelectOption>
+            <NativeSelectOption value="14">Hora · 14:00</NativeSelectOption>
+            <NativeSelectOption value="19">Hora · 19:00</NativeSelectOption>
+            <NativeSelectOption value="22">Hora · 22:00</NativeSelectOption>
+          </NativeSelect>
 
-          <Input
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Buscar por ID o nombre…"
-            className="w-[220px]"
-            aria-label="Buscar cámara"
-          />
-
-          <div className="ml-auto flex items-center gap-1 rounded-lg bg-muted p-0.5">
+          <ToggleGroup
+            type="single"
+            value={String(gridLayout)}
+            onValueChange={(value) => {
+              if (value) setGridLayout(Number(value) as GridLayout);
+            }}
+            variant="outline"
+            size="sm"
+            spacing={0}
+            aria-label="Disposición de la cuadrícula"
+          >
             {LAYOUTS.map((layout) => {
               const Icon = layout.icon;
-              const active = gridLayout === layout.value;
               return (
-                <button
+                <ToggleGroupItem
                   key={layout.value}
-                  type="button"
-                  data-testid={`layout-${layout.value}`}
-                  onClick={() => setGridLayout(layout.value)}
-                  aria-pressed={active}
+                  value={String(layout.value)}
+                  aria-label={layout.label}
                   title={layout.label}
-                  className={`flex size-7 items-center justify-center rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none ${
-                    active
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
+                  data-testid={`layout-${layout.value}`}
                 >
                   <Icon className="size-3.5" />
-                </button>
+                </ToggleGroupItem>
               );
             })}
-          </div>
+          </ToggleGroup>
 
           <div className="flex items-center gap-1">
             <Button
@@ -252,31 +316,52 @@ export function MonitoringView() {
           </Badge>
         ) : null}
         <span className="text-[11px] text-muted-foreground">
-          {illumination === 'auto'
+          {sceneHour === null
             ? 'Modo día/noche automático según el reloj de la plataforma.'
-            : illumination === 'dia'
-              ? 'Vista diurna forzada: el filtro IR-cut permanece abierto.'
-              : 'Vista nocturna forzada: filtro IR-cut cerrado e iluminación infrarroja.'}
+            : `Hora forzada a las ${String(sceneHour).padStart(2, '0')}:00 — el filtro IR-cut y la iluminación infrarroja responden a esa hora.`}
         </span>
       </div>
 
-      <div
-        className="grid gap-3"
-        style={{
-          gridTemplateColumns: `repeat(${gridColumns(gridLayout)}, minmax(0, 1fr))`,
+      {pageCameras.length === 0 ? (
+        <Empty className="border border-border/60">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <Search />
+            </EmptyMedia>
+            <EmptyTitle>Ninguna cámara coincide con el filtro</EmptyTitle>
+            <EmptyDescription>
+              Ajusta la búsqueda o los filtros de sector y estado para recuperar la lista.
+            </EmptyDescription>
+          </EmptyHeader>
+        </Empty>
+      ) : (
+        <div
+          className="grid gap-3"
+          style={{
+            gridTemplateColumns: `repeat(${gridColumns(gridLayout)}, minmax(0, 1fr))`,
+          }}
+          data-testid="monitoring-grid"
+        >
+          {pageCameras.map((camera) => (
+            <CameraTile
+              key={camera.id}
+              camera={camera}
+              highlighted={camera.id === highlightedCameraId}
+              sectorName={sectorNameById.get(camera.sectorId) ?? camera.sectorId}
+              sceneHour={sceneHour}
+              onOpenDetail={onOpenDetail}
+            />
+          ))}
+        </div>
+      )}
+
+      <CameraDetailSheet
+        cameraId={detailCameraId}
+        open={detailCameraId !== null}
+        onOpenChange={(open) => {
+          if (!open) setDetailCameraId(null);
         }}
-        data-testid="monitoring-grid"
-      >
-        {pageCameras.map((camera) => (
-          <CameraTile
-            key={camera.id}
-            camera={camera}
-            highlighted={camera.id === highlightedCameraId}
-            sectorName={sectorNameById.get(camera.sectorId) ?? camera.sectorId}
-            illumination={illumination}
-          />
-        ))}
-      </div>
+      />
     </div>
   );
 }
@@ -298,12 +383,14 @@ function CameraTile({
   camera,
   highlighted,
   sectorName,
-  illumination,
+  sceneHour,
+  onOpenDetail,
 }: {
   camera: Camera;
   highlighted: boolean;
   sectorName: string;
-  illumination: IlluminationPreference;
+  sceneHour: SceneHour;
+  onOpenDetail: (cameraId: string) => void;
 }) {
   const hasAlert = camera.status === 'alerta';
   const feedRef = useRef<CameraFeedHandle>(null);
@@ -346,7 +433,13 @@ function CameraTile({
       data-testid={`camera-tile-${camera.id}`}
     >
       <div ref={stageRef} className="relative aspect-video w-full overflow-hidden bg-black">
-        <Link href={`/monitoreo/${camera.id}`} className="block h-full w-full">
+        <button
+          type="button"
+          onClick={() => onOpenDetail(camera.id)}
+          aria-label={`Abrir ficha de ${camera.id}`}
+          data-testid={`camera-open-${camera.id}`}
+          className="block h-full w-full cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none focus-visible:ring-inset"
+        >
           <div
             className="h-full w-full transition-transform duration-200"
             style={{ transform: zoom > 1 ? `scale(${zoom})` : undefined }}
@@ -358,39 +451,48 @@ function CameraTile({
               targets={simulation.targets}
               showDetections
               compact
-              illumination={illumination}
+              sceneHour={sceneHour}
               getTimeSec={simulation.getTimeSec}
               getClockMs={simulation.getClockMs}
               healthWarning={simulation.healthWarning}
             />
           </div>
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/25" />
-        </Link>
+        </button>
 
+        {/*
+          Distintivos sobre el vídeo: el color viene de los tokens semánticos y
+          la base translúcida mantiene la lectura sobre cualquier fotograma.
+        */}
         <div className="pointer-events-none absolute top-2 left-2 flex items-center gap-1.5">
-          <span className="rounded bg-black/65 px-1.5 py-0.5 font-mono text-[11px] text-white/90">
+          <span className="rounded bg-background/75 px-1.5 py-0.5 font-mono text-[11px] text-foreground/90 backdrop-blur-sm">
             {camera.id}
           </span>
           {hasAlert ? (
-            <span className="flex animate-pulse items-center gap-1 rounded bg-critical px-1.5 py-0.5 text-[11px] font-semibold text-white">
+            <Badge
+              variant="negative"
+              className="border-critical/50 bg-background/75 text-critical backdrop-blur-sm"
+            >
               <CircleAlert className="size-3" />
               ALERTA
-            </span>
+            </Badge>
           ) : null}
           {highlighted && !hasAlert ? (
-            <span className="rounded bg-warning px-1.5 py-0.5 text-[11px] font-semibold text-black">
+            <Badge
+              variant="outline"
+              className="border-warning/50 bg-background/75 text-warning backdrop-blur-sm"
+            >
               NUEVO
-            </span>
+            </Badge>
           ) : null}
         </div>
 
         {/*
-          Barra de acciones del NVR: sólo aparece al pasar el cursor sobre la
-          celda y se apoya en la esquina superior derecha, libre del OSD del
-          feed (que ocupa la inferior derecha).
+          Barra de acciones del NVR: aparece al pasar el cursor, al enfocar con
+          el teclado y siempre en punteros gruesos, donde no existe el hover.
         */}
         <div
-          className="absolute top-1.5 right-1.5 flex items-center gap-0.5 rounded-md border border-white/10 bg-black/65 p-0.5 opacity-0 backdrop-blur-sm transition-opacity duration-150 group-focus-within:opacity-100 group-hover:opacity-100"
+          className="absolute top-1.5 right-1.5 flex items-center gap-0.5 rounded-lg border border-border bg-background/85 p-0.5 opacity-0 backdrop-blur-sm transition-opacity duration-150 group-focus-within:opacity-100 group-hover:opacity-100 pointer-coarse:opacity-100"
           data-testid={`camera-toolbar-${camera.id}`}
         >
           <TileAction
@@ -424,7 +526,9 @@ function CameraTile({
           <TileAction
             label="Audio"
             testId={`toolbar-audio-${camera.id}`}
-            onClick={() => toast.info('Canal de audio unidireccional (simulado).')}
+            onClick={() =>
+              toast.info('Canal de audio unidireccional disponible en la ficha de cámara.')
+            }
           >
             <Volume2 />
           </TileAction>
@@ -439,7 +543,9 @@ function CameraTile({
 
         <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 px-2.5 py-2">
           <span className="truncate text-xs font-medium text-white">{camera.name}</span>
-          <span className="shrink-0 text-[10px] text-white/60">{camera.resolution}</span>
+          <span className="shrink-0 text-[10px] text-white/60 tabular-nums">
+            {camera.resolution}
+          </span>
         </div>
       </div>
     </div>
@@ -464,7 +570,7 @@ function TileAction({
       title={label}
       aria-label={label}
       data-testid={testId}
-      className="flex size-6 items-center justify-center rounded text-white/70 transition-colors hover:bg-white/15 hover:text-white focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none [&_svg]:size-3.5"
+      className="flex size-6 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none [&_svg]:size-3.5"
     >
       {children}
     </button>

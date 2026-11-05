@@ -5,4 +5,5 @@ package-lock.json
 *.tsbuildinfo
 next-env.d.ts
 public/textures
+public/CESIUM
 output

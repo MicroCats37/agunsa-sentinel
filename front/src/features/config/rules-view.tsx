@@ -1,12 +1,23 @@
 'use client';
 
+import { DataTable, createDataTableColumns, createSelectionColumn } from '@/components/data-table';
+import { FormField } from '@/components/form-field';
 import { PageHeader } from '@/components/page-header';
 import { SeverityBadge } from '@/components/status-badge';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -15,14 +26,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { CAMERAS } from '@/data/cameras';
 import { ZONES, VIRTUAL_LINES } from '@/data/zones';
 import {
@@ -30,6 +33,8 @@ import {
   NOTIFICATION_CHANNEL_LABEL,
   OBJECT_TYPE_LABEL,
   RULE_EVENT_LABEL,
+  SEVERITY_LABEL,
+  SEVERITY_ORDER,
 } from '@/domain/labels';
 import { describeRuleScope, validateRule, type RuleIssue } from '@/domain/rule-validation';
 import { evaluateRule } from '@/domain/rule-eval';
@@ -44,7 +49,7 @@ import type {
 import { useRulesStore } from '@/store/rules-store';
 import { timelineSecOf, useSimulationStore } from '@/store/simulation-store';
 import { AlertTriangle, CheckCircle2, Plus, Save } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 /**
@@ -53,6 +58,10 @@ import { toast } from 'sonner';
  * Cada regla es editable y se valida en vivo: los errores bloquean el guardado
  * y los avisos señalan configuraciones operativas riesgosas.
  */
+
+/** Orden operativo de la severidad: crítica primero. */
+const SEVERITY_RANK: Record<Severity, number> = { critica: 0, alta: 1, media: 2, baja: 3 };
+
 export function RulesView() {
   const rules = useRulesStore((state) => state.rules);
   const updateRule = useRulesStore((state) => state.updateRule);
@@ -61,12 +70,11 @@ export function RulesView() {
 
   // La vista previa evalúa la regla contra la escena simulada actual.
   const previewTracks = useSimulationStore((state) => state.tracks);
-  const previewSecond = useSimulationStore((state) =>
-    Math.floor(timelineSecOf(state.clockMs)),
-  );
+  const previewSecond = useSimulationStore((state) => Math.floor(timelineSecOf(state.clockMs)));
 
   const [selectedRuleId, setSelectedRuleId] = useState<string | null>(rules[0]?.id ?? null);
   const [draft, setDraft] = useState<SecurityRule | null>(null);
+  const [pendingDisable, setPendingDisable] = useState<SecurityRule | null>(null);
 
   const context = useMemo(() => ({ cameras: CAMERAS, zones: ZONES }), []);
   const issues = useMemo(() => (draft ? validateRule(draft, context) : []), [context, draft]);
@@ -85,13 +93,91 @@ export function RulesView() {
 
   const selected = rules.find((rule) => rule.id === selectedRuleId) ?? null;
 
-  function startEditing(rule: SecurityRule): void {
+  const startEditing = useCallback((rule: SecurityRule): void => {
     setSelectedRuleId(rule.id);
     setDraft({ ...rule });
-  }
+  }, []);
+
+  const requestToggle = useCallback(
+    (rule: SecurityRule, enabled: boolean): void => {
+      if (enabled) {
+        toggleRule(rule.id, true);
+        return;
+      }
+      setPendingDisable(rule);
+    },
+    [toggleRule],
+  );
+
+  const columns = useMemo(() => {
+    const helper = createDataTableColumns<SecurityRule>();
+
+    return helper.columns([
+      createSelectionColumn<SecurityRule>(),
+      helper.accessor((rule) => rule.name, {
+        id: 'name',
+        header: 'Regla',
+        cell: ({ row }) => (
+          <>
+            <button
+              type="button"
+              className="text-left font-medium text-foreground hover:text-info"
+              onClick={() => startEditing(row.original)}
+              data-testid={`rule-row-${row.original.id}`}
+            >
+              {row.original.name}
+            </button>
+            <span className="block text-xs text-muted-foreground">
+              {RULE_EVENT_LABEL[row.original.event]} · {OBJECT_TYPE_LABEL[row.original.objectType]}
+            </span>
+          </>
+        ),
+      }),
+      helper.accessor((rule) => describeRuleScope(rule, context), {
+        id: 'scope',
+        header: 'Ámbito',
+        cell: ({ row }) => (
+          <span className="text-xs text-muted-foreground">
+            {describeRuleScope(row.original, context)}
+          </span>
+        ),
+      }),
+      helper.accessor((rule) => rule.severity, {
+        id: 'severity',
+        header: 'Severidad',
+        filterFn: 'arrHas',
+        sortFn: (rowA, rowB, columnId) => {
+          const a = SEVERITY_RANK[rowA.getValue<Severity>(columnId)] ?? 0;
+          const b = SEVERITY_RANK[rowB.getValue<Severity>(columnId)] ?? 0;
+          return a - b;
+        },
+        cell: ({ row }) => <SeverityBadge severity={row.original.severity} />,
+      }),
+      helper.accessor((rule) => (rule.enabled ? 'activa' : 'inactiva'), {
+        id: 'enabled',
+        header: 'Activa',
+        filterFn: 'arrHas',
+        cell: ({ row }) => (
+          <Switch
+            checked={row.original.enabled}
+            onCheckedChange={(checked) => requestToggle(row.original, checked)}
+            aria-label={`Activar ${row.original.name}`}
+            data-testid={`rule-toggle-${row.original.id}`}
+          />
+        ),
+      }),
+    ]);
+  }, [context, requestToggle, startEditing]);
 
   function patch(patchValue: Partial<SecurityRule>): void {
     setDraft((current) => (current ? { ...current, ...patchValue } : current));
+  }
+
+  function confirmDisable(): void {
+    if (!pendingDisable) return;
+    toggleRule(pendingDisable.id, false);
+    toast.info(`Regla «${pendingDisable.name}» desactivada.`);
+    setPendingDisable(null);
   }
 
   function save(): void {
@@ -148,56 +234,41 @@ export function RulesView() {
             <CardTitle>Reglas configuradas</CardTitle>
             <CardDescription>
               {rules.filter((rule) => rule.enabled).length} activas de {rules.length} registradas.
+              Selecciona una fila para editarla.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Regla</TableHead>
-                  <TableHead className="w-[180px]">Ámbito</TableHead>
-                  <TableHead className="w-[110px]">Severidad</TableHead>
-                  <TableHead className="w-[90px]">Activa</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {rules.map((rule) => (
-                  <TableRow
-                    key={rule.id}
-                    data-selected={rule.id === selectedRuleId}
-                    className={rule.id === selectedRuleId ? 'bg-muted/60' : undefined}
-                  >
-                    <TableCell>
-                      <button
-                        type="button"
-                        className="text-left font-medium text-foreground hover:text-info"
-                        onClick={() => startEditing(rule)}
-                        data-testid={`rule-row-${rule.id}`}
-                      >
-                        {rule.name}
-                      </button>
-                      <span className="block text-xs text-muted-foreground">
-                        {RULE_EVENT_LABEL[rule.event]} · {OBJECT_TYPE_LABEL[rule.objectType]}
-                      </span>
-                    </TableCell>
-                    <TableCell className="text-xs text-muted-foreground">
-                      {describeRuleScope(rule, context)}
-                    </TableCell>
-                    <TableCell>
-                      <SeverityBadge severity={rule.severity} />
-                    </TableCell>
-                    <TableCell>
-                      <Switch
-                        checked={rule.enabled}
-                        onCheckedChange={(checked) => toggleRule(rule.id, checked)}
-                        aria-label={`Activar ${rule.name}`}
-                        data-testid={`rule-toggle-${rule.id}`}
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <DataTable
+              data={rules}
+              columns={columns}
+              getRowId={(rule) => rule.id}
+              searchText={(rule) =>
+                `${rule.name} ${rule.event} ${rule.objectType} ${rule.severity} ${describeRuleScope(rule, context)}`
+              }
+              searchPlaceholder="Buscar por nombre, evento o ámbito…"
+              filters={[
+                {
+                  columnId: 'severity',
+                  label: 'Severidad',
+                  options: SEVERITY_ORDER.map((severity) => ({
+                    value: severity,
+                    label: SEVERITY_LABEL[severity],
+                  })),
+                },
+                {
+                  columnId: 'enabled',
+                  label: 'Estado',
+                  options: [
+                    { value: 'activa', label: 'Activa' },
+                    { value: 'inactiva', label: 'Inactiva' },
+                  ],
+                },
+              ]}
+              pageSize={10}
+              noun="reglas"
+              isRowSelected={(rule) => rule.id === selectedRuleId}
+              emptyMessage="No hay reglas que coincidan con los filtros aplicados."
+            />
           </CardContent>
         </Card>
 
@@ -211,23 +282,21 @@ export function RulesView() {
           <CardContent>
             {draft ? (
               <div className="flex flex-col gap-3">
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="rule-name">Nombre</Label>
+                <FormField label="Nombre" htmlFor="rule-name">
                   <Input
                     id="rule-name"
                     value={draft.name}
                     onChange={(event) => patch({ name: event.target.value })}
                   />
-                </div>
+                </FormField>
 
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="rule-object">Tipo de objeto</Label>
+                  <FormField label="Tipo de objeto" htmlFor="rule-object">
                     <Select
                       value={draft.objectType}
                       onValueChange={(value) => patch({ objectType: value as ObjectType })}
                     >
-                      <SelectTrigger id="rule-object">
+                      <SelectTrigger id="rule-object" className="w-full">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -235,15 +304,14 @@ export function RulesView() {
                         <SelectItem value="vehiculo">Vehículo</SelectItem>
                       </SelectContent>
                     </Select>
-                  </div>
+                  </FormField>
 
-                  <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="rule-event">Evento esperado</Label>
+                  <FormField label="Evento esperado" htmlFor="rule-event">
                     <Select
                       value={draft.event}
                       onValueChange={(value) => patch({ event: value as RuleEvent })}
                     >
-                      <SelectTrigger id="rule-event">
+                      <SelectTrigger id="rule-event" className="w-full">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -265,12 +333,11 @@ export function RulesView() {
                         ))}
                       </SelectContent>
                     </Select>
-                  </div>
+                  </FormField>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="rule-scope-kind">Ámbito</Label>
+                  <FormField label="Ámbito" htmlFor="rule-scope-kind">
                     <Select
                       value={draft.scopeKind}
                       onValueChange={(value) =>
@@ -281,7 +348,7 @@ export function RulesView() {
                         })
                       }
                     >
-                      <SelectTrigger id="rule-scope-kind">
+                      <SelectTrigger id="rule-scope-kind" className="w-full">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -289,15 +356,14 @@ export function RulesView() {
                         <SelectItem value="zona">Zona</SelectItem>
                       </SelectContent>
                     </Select>
-                  </div>
+                  </FormField>
 
-                  <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="rule-scope">Aplicar a</Label>
+                  <FormField label="Aplicar a" htmlFor="rule-scope">
                     <Select
                       value={draft.scopeId}
                       onValueChange={(value) => patch({ scopeId: value })}
                     >
-                      <SelectTrigger id="rule-scope">
+                      <SelectTrigger id="rule-scope" className="w-full">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -314,12 +380,11 @@ export function RulesView() {
                             ))}
                       </SelectContent>
                     </Select>
-                  </div>
+                  </FormField>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="rule-start">Horario desde</Label>
+                  <FormField label="Horario desde" htmlFor="rule-start">
                     <Input
                       id="rule-start"
                       value={draft.schedule.start}
@@ -329,9 +394,8 @@ export function RulesView() {
                         })
                       }
                     />
-                  </div>
-                  <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="rule-end">Horario hasta</Label>
+                  </FormField>
+                  <FormField label="Horario hasta" htmlFor="rule-end">
                     <Input
                       id="rule-end"
                       value={draft.schedule.end}
@@ -341,12 +405,11 @@ export function RulesView() {
                         })
                       }
                     />
-                  </div>
+                  </FormField>
                 </div>
 
                 <div className="grid grid-cols-3 gap-3">
-                  <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="rule-dwell">Permanencia (s)</Label>
+                  <FormField label="Permanencia (s)" htmlFor="rule-dwell">
                     <Input
                       id="rule-dwell"
                       type="number"
@@ -354,9 +417,8 @@ export function RulesView() {
                       value={draft.minDwellSeconds}
                       onChange={(event) => patch({ minDwellSeconds: Number(event.target.value) })}
                     />
-                  </div>
-                  <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="rule-cooldown">Espera (s)</Label>
+                  </FormField>
+                  <FormField label="Espera (s)" htmlFor="rule-cooldown">
                     <Input
                       id="rule-cooldown"
                       type="number"
@@ -364,14 +426,13 @@ export function RulesView() {
                       value={draft.cooldownSeconds}
                       onChange={(event) => patch({ cooldownSeconds: Number(event.target.value) })}
                     />
-                  </div>
-                  <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="rule-direction">Sentido</Label>
+                  </FormField>
+                  <FormField label="Sentido" htmlFor="rule-direction">
                     <Select
                       value={draft.direction}
                       onValueChange={(value) => patch({ direction: value as CrossingDirection })}
                     >
-                      <SelectTrigger id="rule-direction">
+                      <SelectTrigger id="rule-direction" className="w-full">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -384,17 +445,16 @@ export function RulesView() {
                         )}
                       </SelectContent>
                     </Select>
-                  </div>
+                  </FormField>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="rule-severity">Severidad</Label>
+                  <FormField label="Severidad" htmlFor="rule-severity">
                     <Select
                       value={draft.severity}
                       onValueChange={(value) => patch({ severity: value as Severity })}
                     >
-                      <SelectTrigger id="rule-severity">
+                      <SelectTrigger id="rule-severity" className="w-full">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -405,17 +465,16 @@ export function RulesView() {
                         ))}
                       </SelectContent>
                     </Select>
-                  </div>
+                  </FormField>
 
-                  <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="rule-channel">Canal de notificación</Label>
+                  <FormField label="Canal de notificación" htmlFor="rule-channel">
                     <Select
                       value={draft.notificationChannel}
                       onValueChange={(value) =>
                         patch({ notificationChannel: value as NotificationChannel })
                       }
                     >
-                      <SelectTrigger id="rule-channel">
+                      <SelectTrigger id="rule-channel" className="w-full">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -428,7 +487,7 @@ export function RulesView() {
                         )}
                       </SelectContent>
                     </Select>
-                  </div>
+                  </FormField>
                 </div>
 
                 <IssueList issues={issues} />
@@ -504,6 +563,29 @@ export function RulesView() {
           </CardContent>
         </Card>
       </div>
+
+      <AlertDialog
+        open={pendingDisable !== null}
+        onOpenChange={(open) => {
+          if (!open) setPendingDisable(null);
+        }}
+      >
+        <AlertDialogContent size="sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Desactivar la regla</AlertDialogTitle>
+            <AlertDialogDescription>
+              «{pendingDisable?.name}» dejará de generar alertas del perímetro. Los incidentes ya
+              registrados se conservan y la regla se puede volver a activar en cualquier momento.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction variant="destructive" onClick={confirmDisable}>
+              Desactivar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

@@ -140,8 +140,7 @@ export const CAMERA_INVENTORY: readonly CameraInventoryRow[] = [
     priority: 'P3',
     sectorId: 'sec-gambetta',
     receivedResolution: { width: 2592, height: 1944 },
-    dayFinding:
-      'Acceso distinguible; el reloj superpuesto no coincide con la hora de consulta.',
+    dayFinding: 'Acceso distinguible; el reloj superpuesto no coincide con la hora de consulta.',
     nightFinding:
       'Acceso y calzada distinguibles, buena visión general. Foco luminoso lateral saturado. El reloj visible marca 07:08:55 frente a la consulta nocturna: validar NTP y actualidad del fotograma.',
     recommendedAction: 'Mantener y verificar reconocimiento y grabación.',
@@ -538,16 +537,16 @@ export const CAMERA_INVENTORY: readonly CameraInventoryRow[] = [
     nightResult: 'ERROR',
     classification: 'sin_imagen',
     priority: 'P1',
-    sectorId: 'sec-siete',
+    sectorId: 'sec-arica',
     receivedResolution: null,
     dayFinding: NO_FRAME_DAY,
     nightFinding: NO_FRAME_RTSP,
     recommendedAction: ACTION_DIAGNOSE,
     httpError: 'HTTP 502: Bad Gateway',
-    sectorNote: SIETE_INVENTORY,
+    sectorNote: ARICA_INVENTORY,
     obstructionId: null,
     viewIntent: 'exterior',
-    label: 'Siete · poste 22',
+    label: 'Arica · poste 22',
   },
   {
     id: 'C23',
@@ -618,8 +617,7 @@ export const CAMERA_INVENTORY: readonly CameraInventoryRow[] = [
     priority: 'P2',
     sectorId: 'sec-arica',
     receivedResolution: { width: 2592, height: 1520 },
-    dayFinding:
-      'Volvió a entregar imagen; calle visible con detalle limitado. Noche pendiente.',
+    dayFinding: 'Volvió a entregar imagen; calle visible con detalle limitado. Noche pendiente.',
     nightFinding: NO_FRAME_NO_RTSP,
     recommendedAction: 'Verificar estabilidad y nitidez nocturna antes de aceptar.',
     httpError: 'HTTP 502: Bad Gateway',
@@ -762,8 +760,7 @@ export const CAMERA_INVENTORY: readonly CameraInventoryRow[] = [
     dayFinding: '640 x 480; escena blosa y pérdida de detalle.',
     nightFinding:
       'Sólo 640 x 480 recibidos, imagen blanda y halos. Confirmar modelo físico y perfil principal antes de decidir reemplazo.',
-    recommendedAction:
-      'Verificar perfil principal y modelo; evaluar renovación por ciclo de vida.',
+    recommendedAction: 'Verificar perfil principal y modelo; evaluar renovación por ciclo de vida.',
     httpError: null,
     sectorNote: COROLA_INVENTORY,
     obstructionId: null,
@@ -833,9 +830,7 @@ export const CAMERA_INVENTORY: readonly CameraInventoryRow[] = [
   },
 ];
 
-export const INVENTORY_BY_ID = new Map(
-  CAMERA_INVENTORY.map((row) => [row.id, row] as const),
-);
+export const INVENTORY_BY_ID = new Map(CAMERA_INVENTORY.map((row) => [row.id, row] as const));
 
 /**
  * Resumen de la clasificación conjunta.

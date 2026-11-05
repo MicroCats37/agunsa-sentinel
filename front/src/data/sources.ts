@@ -58,16 +58,14 @@ export const SOURCES: readonly SourceRef[] = [
   {
     id: 'S3',
     title: 'ONVIF Conformant Products',
-    detail:
-      'La conformidad se verifica por modelo y versión de firmware/software.',
+    detail: 'La conformidad se verifica por modelo y versión de firmware/software.',
     url: 'https://www.onvif.org/conformant-products/',
     kind: 'referencia',
   },
   {
     id: 'S4',
     title: 'Hanwha SNO-L6083R',
-    detail:
-      'Modelo discontinuado en esa página regional; soporte local por confirmar.',
+    detail: 'Modelo discontinuado en esa página regional; soporte local por confirmar.',
     url: 'https://www.hanwhavision.com/mea/products/product-details/SNO-L6083R',
     kind: 'referencia',
   },

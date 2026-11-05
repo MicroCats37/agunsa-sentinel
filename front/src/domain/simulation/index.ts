@@ -10,10 +10,7 @@ import type { SimActorState, Storyline } from './types';
  * directamente.
  */
 export { SimulationEngine, actorPositionAt, isActorActive } from './engine';
-export type {
-  SimCameraDescriptor,
-  SimulationEngineOptions,
-} from './engine';
+export type { SimCameraDescriptor, SimulationEngineOptions } from './engine';
 export { STORYLINE, STORYLINE_DURATION_SEC, STORYLINE_ACTORS } from './storyline';
 export type {
   SimActor,
@@ -35,9 +32,7 @@ export type {
  * Es el puente que hace que **la silueta que se ve sea la detección**: el
  * feed dibuja exactamente los actores que el motor ha evaluado.
  */
-export function actorStatesToTargets(
-  actors: readonly SimActorState[],
-): CameraTrackTarget[] {
+export function actorStatesToTargets(actors: readonly SimActorState[]): CameraTrackTarget[] {
   return actors.map((state) => ({
     id: state.actor.id,
     objectType: state.actor.objectType,
@@ -96,9 +91,7 @@ export function scriptedActorFor(
   actors: readonly SimActorState[],
   cameraId: string,
 ): SimActorState | undefined {
-  return actors.find(
-    (state) => state.actor.cameraId === cameraId && !state.actor.ambient,
-  );
+  return actors.find((state) => state.actor.cameraId === cameraId && !state.actor.ambient);
 }
 
 /** Etiqueta corta de un guion de simulación. */

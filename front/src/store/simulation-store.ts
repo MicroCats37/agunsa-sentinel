@@ -76,6 +76,16 @@ interface SimulationState {
   pause: () => void;
   toggle: () => void;
   setSpeed: (speed: SimulationSpeed) => void;
+  /**
+   * Creación automática de incidentes mientras avanza la línea de tiempo.
+   *
+   * Activa por defecto: la plataforma debe alertas sola, como en una sala de
+   * control real. La secuencia es determinista —el guion de la noche fija qué
+   * ocurre y cuándo—, de modo que dos ejecuciones reproducen la misma
+   * historia. Se puede desactivar para presentar en un escenario controlado.
+   */
+  autoIncidents: boolean;
+  setAutoIncidents: (enabled: boolean) => void;
   /** Vuelve al instante de referencia de la plataforma. */
   reset: () => void;
 }
@@ -134,7 +144,10 @@ function isOpen(status: Incident['status']): boolean {
  * el estado de salud de las cámaras que el guion gestiona y el reparto de
  * actores que alimenta los feeds.
  */
-function sync(clockMs: number): {
+function sync(
+  clockMs: number,
+  autoIncidents: boolean,
+): {
   tracks: Record<string, CameraTrackTarget[]>;
   signature: string;
 } {
@@ -144,6 +157,7 @@ function sync(clockMs: number): {
   const incidentsStore = useIncidentsStore.getState();
   const existing = new Set(incidentsStore.incidents.map((incident) => incident.id));
   for (const incident of snapshot.incidents) {
+    if (!autoIncidents) break;
     if (existing.has(incident.id)) continue;
     incidentsStore.addIncident(toPlatformIncident(incident));
     useActivityStore.getState().log({
@@ -195,13 +209,19 @@ function sync(clockMs: number): {
   };
 }
 
+/** Momento (ms reales) de la última sincronización completa con el motor. */
+let lastSyncAt = 0;
+/** Periodo mínimo entre dos sincronizaciones completas, en ms reales. */
+const SYNC_PERIOD_MS = 200;
+
 export const useSimulationStore = create<SimulationState>()((set, get) => {
-  const initial = sync(PLATFORM_NOW_MS);
+  const initial = sync(PLATFORM_NOW_MS, true);
 
   return {
     clockMs: PLATFORM_NOW_MS,
     playing: false,
     speed: 1,
+    autoIncidents: true,
     tracks: initial.tracks,
     tracksSignature: initial.signature,
 
@@ -209,7 +229,16 @@ export const useSimulationStore = create<SimulationState>()((set, get) => {
       const state = get();
       if (!state.playing) return;
       const next = Math.min(TIMELINE_END_MS, state.clockMs + deltaMs * state.speed);
-      const result = sync(next);
+
+      const now = typeof performance !== 'undefined' ? performance.now() : 0;
+      const due = now - lastSyncAt >= SYNC_PERIOD_MS || next >= TIMELINE_END_MS;
+      if (!due) {
+        set({ clockMs: next });
+        return;
+      }
+
+      lastSyncAt = now;
+      const result = sync(next, state.autoIncidents);
       set({
         clockMs: next,
         tracks: result.signature === state.tracksSignature ? state.tracks : result.tracks,
@@ -221,7 +250,8 @@ export const useSimulationStore = create<SimulationState>()((set, get) => {
     seek: (clockMs) => {
       const clamped = Math.max(TIMELINE_START_MS, Math.min(TIMELINE_END_MS, clockMs));
       const state = get();
-      const result = sync(clamped);
+      lastSyncAt = 0;
+      const result = sync(clamped, state.autoIncidents);
       set({
         clockMs: clamped,
         tracks: result.signature === state.tracksSignature ? state.tracks : result.tracks,
@@ -246,6 +276,8 @@ export const useSimulationStore = create<SimulationState>()((set, get) => {
     },
 
     setSpeed: (speed) => set({ speed }),
+
+    setAutoIncidents: (enabled) => set({ autoIncidents: enabled }),
 
     reset: () => {
       const state = get();

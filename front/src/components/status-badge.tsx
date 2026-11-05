@@ -84,7 +84,7 @@ export function CapabilityBadge({ capability }: { capability: CapabilityLevel })
   if (capability === 'operativo') return null;
   return (
     <Badge variant="outline" className={capabilityTone[capability]}>
-      {capability === 'avanzada' ? 'Simulado · avanzado' : 'Simulado · opcional'}
+      {capability === 'avanzada' ? 'Capacidad avanzada' : 'Capacidad opcional'}
     </Badge>
   );
 }

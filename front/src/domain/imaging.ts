@@ -1,5 +1,5 @@
 import { PLATFORM_NOW_MS } from './clock';
-import type { CameraSpec, Illumination, IlluminationPreference } from './types';
+import type { CameraSpec, Illumination, SceneHour } from './types';
 
 /**
  * Modelo de imagen de una cámara IP industrial.
@@ -59,20 +59,31 @@ export function fovZoomFactor(fovDeg: number, referenceFovDeg = REFERENCE_FOV_DE
 /** Iluminación del entorno en el instante dado (horas UTC). */
 export function illuminationAt(timestampMs: number): Illumination {
   const hour = (timestampMs % 86_400_000) / 3_600_000;
-  if (hour >= DUSK_START_HOUR && hour < DUSK_END_HOUR) return 'crepusculo';
-  if (hour >= DAWN_START_HOUR && hour < DAWN_END_HOUR) return 'crepusculo';
-  if (hour >= DUSK_END_HOUR || hour < DAWN_START_HOUR) return 'noche';
+  return illuminationAtHour(hour);
+}
+
+/** Iluminación del entorno a una hora concreta del día (0–24). */
+export function illuminationAtHour(hour: number): Illumination {
+  const normalized = ((hour % 24) + 24) % 24;
+  if (normalized >= DUSK_START_HOUR && normalized < DUSK_END_HOUR) return 'crepusculo';
+  if (normalized >= DAWN_START_HOUR && normalized < DAWN_END_HOUR) return 'crepusculo';
+  if (normalized >= DUSK_END_HOUR || normalized < DAWN_START_HOUR) return 'noche';
   return 'dia';
 }
 
-/** Resuelve la preferencia del operador sobre la iluminación simulada. */
-export function resolveIllumination(
-  preference: IlluminationPreference,
-  timestampMs: number,
-): Illumination {
-  if (preference === 'dia') return 'dia';
-  if (preference === 'noche') return 'noche';
-  return illuminationAt(timestampMs);
+/**
+ * Resuelve la hora de la escena.
+ *
+ * `null` = seguir el reloj de la plataforma. Un número la fuerza.
+ */
+export function resolveSceneHour(sceneHour: SceneHour, timestampMs: number): number {
+  if (sceneHour === null) return (timestampMs % 86_400_000) / 3_600_000;
+  return ((sceneHour % 24) + 24) % 24;
+}
+
+/** Resuelve la iluminación a partir de la hora de la escena. */
+export function resolveIllumination(sceneHour: SceneHour, timestampMs: number): Illumination {
+  return illuminationAtHour(resolveSceneHour(sceneHour, timestampMs));
 }
 
 /**

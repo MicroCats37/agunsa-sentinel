@@ -1,8 +1,4 @@
-import type {
-  IncidentCategory,
-  ObjectType,
-  Severity,
-} from '@/domain/types';
+import type { IncidentCategory, ObjectType, Severity } from '@/domain/types';
 
 /**
  * Contratos del motor de simulación.

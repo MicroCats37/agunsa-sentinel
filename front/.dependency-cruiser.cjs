@@ -96,6 +96,14 @@ module.exports = {
       to: { path: '^src/features/config/zone-editor/(?!index\\.tsx?$)' },
     },
     {
+      name: 'geospatial-scene-entry-point-only',
+      severity: 'error',
+      comment:
+        'La vista geoespacial es un módulo profundo: sólo se importa src/features/scene/index.ts.',
+      from: { pathNot: '^src/features/scene/' },
+      to: { path: '^src/features/scene/(?!index\\.ts$)' },
+    },
+    {
       name: 'no-circular',
       severity: 'error',
       comment: 'Sin ciclos de dependencia.',

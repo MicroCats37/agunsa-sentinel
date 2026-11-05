@@ -24,8 +24,7 @@ export const INTERVENTION_PHASES: readonly InterventionPhase[] = [
     id: 'fase-1',
     number: 1,
     title: 'Levantar y recuperar',
-    scope:
-      '5 sin imagen; C08 intermitente; reloj de C02; inventario/postes/switches.',
+    scope: '5 sin imagen; C08 intermitente; reloj de C02; inventario/postes/switches.',
     deliverable:
       'TI + integrador: diagnóstico con pruebas y plano trazable; Operaciones autoriza acceso.',
     owner: 'TI + integrador',
@@ -36,8 +35,7 @@ export const INTERVENTION_PHASES: readonly InterventionPhase[] = [
     id: 'fase-2',
     number: 2,
     title: 'Corregir calidad',
-    scope:
-      '19 deficientes y 6 limitadas: óptica, foco, iluminación, perfiles y obstáculos.',
+    scope: '19 deficientes y 6 limitadas: óptica, foco, iluminación, perfiles y obstáculos.',
     deliverable:
       'Integrador: fotos antes/después, parámetros y comparación día/noche. Seguridad valida objetivo.',
     owner: 'Integrador',
@@ -72,8 +70,7 @@ export const INTERVENTION_PHASES: readonly InterventionPhase[] = [
     number: 5,
     title: 'Integrar y aceptar',
     scope: 'VMS, grabación, red, energía, centro de monitoreo y formación.',
-    deliverable:
-      'Pruebas SAT, documentación conforme a obra y aceptación firmada con pendientes.',
+    deliverable: 'Pruebas SAT, documentación conforme a obra y aceptación firmada con pendientes.',
     owner: 'TI + Operaciones + Seguridad',
     exitCriteria:
       'Pruebas SAT ejecutadas, documentación conforme a obra entregada y acta de aceptación firmada con la lista de pendientes abierta.',

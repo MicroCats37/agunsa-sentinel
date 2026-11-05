@@ -1,0 +1,3157 @@
+{
+  "schema": "agunsa-facility-layout/v2",
+  "phase": "3A",
+  "coordinateSystem": "WGS84 polygons; heights in meters",
+  "precision": "conceptual",
+  "exportedAt": "2026-11-05T05:06:23.521Z",
+  "areas": [
+    {
+      "id": "drawn-area-1793852603527-a3c984",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12500195602719,
+          "latitude": -11.990247067193836
+        },
+        {
+          "longitude": -77.12497945800664,
+          "latitude": -11.990240990493419
+        },
+        {
+          "longitude": -77.12495291177464,
+          "latitude": -11.990349873242506
+        },
+        {
+          "longitude": -77.12497545114994,
+          "latitude": -11.990355985335519
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793852617735-82dccf",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12497692736045,
+          "latitude": -11.990241007040144
+        },
+        {
+          "longitude": -77.12495812729638,
+          "latitude": -11.990234957308882
+        },
+        {
+          "longitude": -77.12492923442962,
+          "latitude": -11.990342547455285
+        },
+        {
+          "longitude": -77.12494663330813,
+          "latitude": -11.990342546630426
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793852669543-990890",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12494903263595,
+          "latitude": -11.990234442767312
+        },
+        {
+          "longitude": -77.12493174483187,
+          "latitude": -11.990229196918499
+        },
+        {
+          "longitude": -77.1249048688415,
+          "latitude": -11.990335301164682
+        },
+        {
+          "longitude": -77.12492480247873,
+          "latitude": -11.990337917701389
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793852680685-b19db2",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12492509324562,
+          "latitude": -11.990227885362533
+        },
+        {
+          "longitude": -77.12490646200803,
+          "latitude": -11.99022657377319
+        },
+        {
+          "longitude": -77.12488228079133,
+          "latitude": -11.990330067603967
+        },
+        {
+          "longitude": -77.12489955750789,
+          "latitude": -11.99033268446125
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793852695752-e63590",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12490247510095,
+          "latitude": -11.990223950446751
+        },
+        {
+          "longitude": -77.12488251718882,
+          "latitude": -11.990220015166047
+        },
+        {
+          "longitude": -77.12485303996098,
+          "latitude": -11.99032614202606
+        },
+        {
+          "longitude": -77.12487696844745,
+          "latitude": -11.990327450581598
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793852713344-46217f",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12487719805608,
+          "latitude": -11.990217391441465
+        },
+        {
+          "longitude": -77.12485723260298,
+          "latitude": -11.990216079530803
+        },
+        {
+          "longitude": -77.1248317820777,
+          "latitude": -11.990316980902337
+        },
+        {
+          "longitude": -77.12484639920139,
+          "latitude": -11.990322216065811
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793852727695-824a13",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12482523070065,
+          "latitude": -11.990205643709306
+        },
+        {
+          "longitude": -77.12480788847691,
+          "latitude": -11.990201760791617
+        },
+        {
+          "longitude": -77.1247799566655,
+          "latitude": -11.990307814659195
+        },
+        {
+          "longitude": -77.12479989643744,
+          "latitude": -11.990311743592434
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793852741007-21c4c3",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12479990963749,
+          "latitude": -11.99020437718234
+        },
+        {
+          "longitude": -77.12478130539357,
+          "latitude": -11.990199113923374
+        },
+        {
+          "longitude": -77.1247573467737,
+          "latitude": -11.990303885972567
+        },
+        {
+          "longitude": -77.12477330704618,
+          "latitude": -11.990306505136223
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793852750598-1aff69",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12477865650136,
+          "latitude": -11.990193856853654
+        },
+        {
+          "longitude": -77.1247587055062,
+          "latitude": -11.990188599014594
+        },
+        {
+          "longitude": -77.12473074551103,
+          "latitude": -11.990296027510697
+        },
+        {
+          "longitude": -77.1247493686418,
+          "latitude": -11.990298647158752
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793852774847-1e66d0",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12473118388014,
+          "latitude": -11.990184096034694
+        },
+        {
+          "longitude": -77.1247105338244,
+          "latitude": -11.990177741294797
+        },
+        {
+          "longitude": -77.12468086720176,
+          "latitude": -11.990280624001677
+        },
+        {
+          "longitude": -77.12470280275032,
+          "latitude": -11.990286968817728
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793852792973-e94dea",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12467955738205,
+          "latitude": -11.990175199121277
+        },
+        {
+          "longitude": -77.12466277669517,
+          "latitude": -11.990172656795428
+        },
+        {
+          "longitude": -77.12463828372874,
+          "latitude": -11.99027427821732
+        },
+        {
+          "longitude": -77.1246550598463,
+          "latitude": -11.990276816647482
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793852821391-ffd4b4",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12463171545437,
+          "latitude": -11.990162445477544
+        },
+        {
+          "longitude": -77.12461614648215,
+          "latitude": -11.990158595654693
+        },
+        {
+          "longitude": -77.12458665215165,
+          "latitude": -11.99026285337051
+        },
+        {
+          "longitude": -77.12460214571192,
+          "latitude": -11.990267931464423
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793852842550-c9e0af",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12460709698084,
+          "latitude": -11.990157322432571
+        },
+        {
+          "longitude": -77.12458640752916,
+          "latitude": -11.990152229153352
+        },
+        {
+          "longitude": -77.12456066895044,
+          "latitude": -11.990253996054214
+        },
+        {
+          "longitude": -77.12457889993968,
+          "latitude": -11.990260315332337
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793852878063-441287",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12475183028002,
+          "latitude": -11.990190450649402
+        },
+        {
+          "longitude": -77.12473505537723,
+          "latitude": -11.99018790841659
+        },
+        {
+          "longitude": -77.12470925432004,
+          "latitude": -11.990290775239933
+        },
+        {
+          "longitude": -77.12472473497397,
+          "latitude": -11.990293312663274
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793852893646-061d2c",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12465503132816,
+          "latitude": -11.990171385572214
+        },
+        {
+          "longitude": -77.12463561874256,
+          "latitude": -11.990167546500654
+        },
+        {
+          "longitude": -77.12461247431777,
+          "latitude": -11.990271739629746
+        },
+        {
+          "longitude": -77.12462795983123,
+          "latitude": -11.990273008943793
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793852916667-0af458",
+      "type": "vehicle",
+      "color": "#365d73",
+      "height": 1.55,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12505671228377,
+          "latitude": -11.990224750771977
+        },
+        {
+          "longitude": -77.12503355800312,
+          "latitude": -11.990224752453981
+        },
+        {
+          "longitude": -77.12503573069846,
+          "latitude": -11.990335256812697
+        },
+        {
+          "longitude": -77.12503559848433,
+          "latitude": -11.990372027147968
+        },
+        {
+          "longitude": -77.12505486776985,
+          "latitude": -11.99038341401698
+        },
+        {
+          "longitude": -77.1250601111601,
+          "latitude": -11.990346635242574
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793852929389-41ca51",
+      "type": "vehicle",
+      "color": "#365d73",
+      "height": 1.55,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12495683422239,
+          "latitude": -11.990366894912274
+        },
+        {
+          "longitude": -77.12495162934428,
+          "latitude": -11.990390973086628
+        },
+        {
+          "longitude": -77.12484199704828,
+          "latitude": -11.990368055932347
+        },
+        {
+          "longitude": -77.12480078241194,
+          "latitude": -11.99036301836401
+        },
+        {
+          "longitude": -77.12480466677096,
+          "latitude": -11.99033767594221
+        },
+        {
+          "longitude": -77.124833007835,
+          "latitude": -11.990342727295005
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793852986969-6e51bc",
+      "type": "vehicle",
+      "color": "#365d73",
+      "height": 1.55,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12477376800115,
+          "latitude": -11.990326448535415
+        },
+        {
+          "longitude": -77.12465830639745,
+          "latitude": -11.990303063613775
+        },
+        {
+          "longitude": -77.12462268234782,
+          "latitude": -11.99029668317769
+        },
+        {
+          "longitude": -77.12461516351617,
+          "latitude": -11.990320072365273
+        },
+        {
+          "longitude": -77.12465401081113,
+          "latitude": -11.990324323273503
+        },
+        {
+          "longitude": -77.12476943526718,
+          "latitude": -11.990353003291846
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853001766-07ef0b",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12473783681995,
+          "latitude": -11.99044220125688
+        },
+        {
+          "longitude": -77.1247147025892,
+          "latitude": -11.99043423094364
+        },
+        {
+          "longitude": -77.12468591937588,
+          "latitude": -11.990543412670961
+        },
+        {
+          "longitude": -77.12471134571986,
+          "latitude": -11.990549084343561
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853014648-64ad8a",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.1249494849827,
+          "latitude": -11.99048773684571
+        },
+        {
+          "longitude": -77.12492751564106,
+          "latitude": -11.99048546122659
+        },
+        {
+          "longitude": -77.12490422559762,
+          "latitude": -11.990591127278588
+        },
+        {
+          "longitude": -77.12492268773981,
+          "latitude": -11.990600202868613
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853028582-2ed46e",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12492404382704,
+          "latitude": -11.990486598929591
+        },
+        {
+          "longitude": -77.1249020804402,
+          "latitude": -11.990479771714213
+        },
+        {
+          "longitude": -77.12487766985043,
+          "latitude": -11.990585453922058
+        },
+        {
+          "longitude": -77.12489614140883,
+          "latitude": -11.990591127283919
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853049461-d29e61",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12487664048454,
+          "latitude": -11.990475219580627
+        },
+        {
+          "longitude": -77.12486160916286,
+          "latitude": -11.990469528622118
+        },
+        {
+          "longitude": -77.12483263354643,
+          "latitude": -11.990571834331323
+        },
+        {
+          "longitude": -77.12484995769798,
+          "latitude": -11.990576374745757
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853061094-713ae4",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12485466861922,
+          "latitude": -11.990469528624791
+        },
+        {
+          "longitude": -77.12483269404203,
+          "latitude": -11.990462698333397
+        },
+        {
+          "longitude": -77.12480837369661,
+          "latitude": -11.990566141732513
+        },
+        {
+          "longitude": -77.12482685872683,
+          "latitude": -11.99056956391461
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853073821-fb6f01",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12482575286764,
+          "latitude": -11.990462698335456
+        },
+        {
+          "longitude": -77.12480492749658,
+          "latitude": -11.990458141691052
+        },
+        {
+          "longitude": -77.124781808091,
+          "latitude": -11.99056384201917
+        },
+        {
+          "longitude": -77.12480144174616,
+          "latitude": -11.99056612705385
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853100047-e879fd",
+      "type": "vehicle",
+      "color": "#365d73",
+      "height": 1.55,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.1250534368442,
+          "latitude": -11.990552729055848
+        },
+        {
+          "longitude": -77.12502499507778,
+          "latitude": -11.99054889012579
+        },
+        {
+          "longitude": -77.12499781673343,
+          "latitude": -11.990671100925605
+        },
+        {
+          "longitude": -77.12498489022745,
+          "latitude": -11.990695258960358
+        },
+        {
+          "longitude": -77.12500426864386,
+          "latitude": -11.990707967972977
+        },
+        {
+          "longitude": -77.12502107778657,
+          "latitude": -11.990680003021925
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853184397-66d304",
+      "type": "office",
+      "color": "#d7dde0",
+      "height": 5.5,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12429678284343,
+          "latitude": -11.990686207295012
+        },
+        {
+          "longitude": -77.12405425358074,
+          "latitude": -11.990633970779065
+        },
+        {
+          "longitude": -77.12409117800041,
+          "latitude": -11.990440816595273
+        },
+        {
+          "longitude": -77.12320492817747,
+          "latitude": -11.990247914707563
+        },
+        {
+          "longitude": -77.12315285777868,
+          "latitude": -11.990309301416945
+        },
+        {
+          "longitude": -77.12323532970437,
+          "latitude": -11.990694913581786
+        },
+        {
+          "longitude": -77.12425091357412,
+          "latitude": -11.990903283528175
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853196869-334468",
+      "type": "office",
+      "color": "#d7dde0",
+      "height": 5.5,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12419059805589,
+          "latitude": -11.990066572179703
+        },
+        {
+          "longitude": -77.12374754203081,
+          "latitude": -11.98996250941139
+        },
+        {
+          "longitude": -77.12371843436794,
+          "latitude": -11.990081035847655
+        },
+        {
+          "longitude": -77.12416895311763,
+          "latitude": -11.99017979403131
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853213204-a8df2c",
+      "type": "office",
+      "color": "#d7dde0",
+      "height": 5.5,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12416349989958,
+          "latitude": -11.990188769876724
+        },
+        {
+          "longitude": -77.12371467326527,
+          "latitude": -11.990090003718576
+        },
+        {
+          "longitude": -77.1236872461881,
+          "latitude": -11.990197756257746
+        },
+        {
+          "longitude": -77.12414181675443,
+          "latitude": -11.99029819343903
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853233667-ef8287",
+      "type": "office",
+      "color": "#d7dde0",
+      "height": 5.5,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12413368977359,
+          "latitude": -11.990303043292556
+        },
+        {
+          "longitude": -77.12368818219865,
+          "latitude": -11.990207670926637
+        },
+        {
+          "longitude": -77.12366419794462,
+          "latitude": -11.9903149007114
+        },
+        {
+          "longitude": -77.1241095968181,
+          "latitude": -11.990412554098782
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853255526-fd26de",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12436022512652,
+          "latitude": -11.990358366899674
+        },
+        {
+          "longitude": -77.12434042780183,
+          "latitude": -11.990355443819787
+        },
+        {
+          "longitude": -77.12431279862967,
+          "latitude": -11.990456684090594
+        },
+        {
+          "longitude": -77.1243315261764,
+          "latitude": -11.990461636624667
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853263437-481d6a",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12433646723868,
+          "latitude": -11.990354469316406
+        },
+        {
+          "longitude": -77.12431272567176,
+          "latitude": -11.990349599832994
+        },
+        {
+          "longitude": -77.12428718707449,
+          "latitude": -11.990452713044293
+        },
+        {
+          "longitude": -77.12430788774554,
+          "latitude": -11.990455677723865
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853271707-6c65e1",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12430292224558,
+          "latitude": -11.990362265227324
+        },
+        {
+          "longitude": -77.12428711795236,
+          "latitude": -11.990359345946562
+        },
+        {
+          "longitude": -77.12426152623004,
+          "latitude": -11.990465335994799
+        },
+        {
+          "longitude": -77.12427634361805,
+          "latitude": -11.990465336009182
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853279448-db3d8d",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.1242811807453,
+          "latitude": -11.990356426227585
+        },
+        {
+          "longitude": -77.12426440831963,
+          "latitude": -11.990352536210713
+        },
+        {
+          "longitude": -77.12423883727661,
+          "latitude": -11.99045753916227
+        },
+        {
+          "longitude": -77.124255607724,
+          "latitude": -11.990459496287974
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853292629-dee22b",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12425748087068,
+          "latitude": -11.990353508562746
+        },
+        {
+          "longitude": -77.12424180553974,
+          "latitude": -11.990348656384509
+        },
+        {
+          "longitude": -77.12421827750016,
+          "latitude": -11.990454532791775
+        },
+        {
+          "longitude": -77.12423094669003,
+          "latitude": -11.990456561241277
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853317188-e2fb72",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12423496597276,
+          "latitude": -11.990349634532075
+        },
+        {
+          "longitude": -77.12422014462798,
+          "latitude": -11.990344774564047
+        },
+        {
+          "longitude": -77.12419659304898,
+          "latitude": -11.990443840671409
+        },
+        {
+          "longitude": -77.1242094358575,
+          "latitude": -11.990449659473562
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853340876-4a3bfb",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12421126523736,
+          "latitude": -11.990346718630834
+        },
+        {
+          "longitude": -77.12419445736847,
+          "latitude": -11.990338941618962
+        },
+        {
+          "longitude": -77.12417094943558,
+          "latitude": -11.990441896062983
+        },
+        {
+          "longitude": -77.12418575731118,
+          "latitude": -11.99044868972359
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853367805-cba006",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.1243519148172,
+          "latitude": -11.99021651419405
+        },
+        {
+          "longitude": -77.12432769090726,
+          "latitude": -11.990212749678186
+        },
+        {
+          "longitude": -77.12430602801986,
+          "latitude": -11.990315661881775
+        },
+        {
+          "longitude": -77.1243264125453,
+          "latitude": -11.990321944890797
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853377421-8aa614",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12431877833852,
+          "latitude": -11.99021275338062
+        },
+        {
+          "longitude": -77.12430477680967,
+          "latitude": -11.990206485404205
+        },
+        {
+          "longitude": -77.12428186574225,
+          "latitude": -11.990306857169879
+        },
+        {
+          "longitude": -77.12429837832902,
+          "latitude": -11.990315661876625
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853408369-6821b4",
+      "type": "office",
+      "color": "#d7dde0",
+      "height": 5.5,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12441433906696,
+          "latitude": -11.990192584387287
+        },
+        {
+          "longitude": -77.12440668278904,
+          "latitude": -11.990218982274952
+        },
+        {
+          "longitude": -77.1243099451213,
+          "latitude": -11.990185186062675
+        },
+        {
+          "longitude": -77.12427053726557,
+          "latitude": -11.990180204489732
+        },
+        {
+          "longitude": -77.12427557426601,
+          "latitude": -11.990153848352195
+        },
+        {
+          "longitude": -77.12431369616333,
+          "latitude": -11.99016131062878
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853424356-ae458a",
+      "type": "office",
+      "color": "#d7dde0",
+      "height": 5.5,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.1245377136657,
+          "latitude": -11.989913519019789
+        },
+        {
+          "longitude": -77.12451361583912,
+          "latitude": -11.989909065085707
+        },
+        {
+          "longitude": -77.12448354699319,
+          "latitude": -11.990009912758232
+        },
+        {
+          "longitude": -77.12447601851622,
+          "latitude": -11.990058794791047
+        },
+        {
+          "longitude": -77.12449709192983,
+          "latitude": -11.99006768172263
+        },
+        {
+          "longitude": -77.12450459788661,
+          "latitude": -11.990026195525964
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853453621-7f247f",
+      "type": "office",
+      "color": "#d7dde0",
+      "height": 5.5,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12494782813009,
+          "latitude": -11.989846106465842
+        },
+        {
+          "longitude": -77.12482505201072,
+          "latitude": -11.98981304179649
+        },
+        {
+          "longitude": -77.12479759854897,
+          "latitude": -11.989811981642958
+        },
+        {
+          "longitude": -77.12479250303787,
+          "latitude": -11.989829034852518
+        },
+        {
+          "longitude": -77.1248179646033,
+          "latitude": -11.989831048185382
+        },
+        {
+          "longitude": -77.12494388178578,
+          "latitude": -11.989866106249421
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853467172-ab5099",
+      "type": "office",
+      "color": "#d7dde0",
+      "height": 5.5,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.1243966282133,
+          "latitude": -11.989794208565955
+        },
+        {
+          "longitude": -77.12437426282698,
+          "latitude": -11.98978961930048
+        },
+        {
+          "longitude": -77.12424720325197,
+          "latitude": -11.989755603806573
+        },
+        {
+          "longitude": -77.12423591044539,
+          "latitude": -11.989777652214352
+        },
+        {
+          "longitude": -77.12436663517029,
+          "latitude": -11.989809832570845
+        },
+        {
+          "longitude": -77.12438906312471,
+          "latitude": -11.989819028502819
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853494395-ea2053",
+      "type": "office",
+      "color": "#d7dde0",
+      "height": 5.5,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12418226127437,
+          "latitude": -11.989908402272352
+        },
+        {
+          "longitude": -77.12406792236415,
+          "latitude": -11.989892537445774
+        },
+        {
+          "longitude": -77.1240369675354,
+          "latitude": -11.9898876638243
+        },
+        {
+          "longitude": -77.12402964600857,
+          "latitude": -11.989907154577109
+        },
+        {
+          "longitude": -77.12406431026967,
+          "latitude": -11.989913243542683
+        },
+        {
+          "longitude": -77.12417494418648,
+          "latitude": -11.989935139207113
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853526171-545fb7",
+      "type": "office",
+      "color": "#d7dde0",
+      "height": 5.5,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12442605085275,
+          "latitude": -11.990636933344199
+        },
+        {
+          "longitude": -77.12439795942407,
+          "latitude": -11.990633325482452
+        },
+        {
+          "longitude": -77.12438504757202,
+          "latitude": -11.990670465938187
+        },
+        {
+          "longitude": -77.1243669024563,
+          "latitude": -11.990779084815014
+        },
+        {
+          "longitude": -77.12439117460625,
+          "latitude": -11.990785042438523
+        },
+        {
+          "longitude": -77.12441055822784,
+          "latitude": -11.990671661700874
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853542931-5d327e",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12376245760635,
+          "latitude": -11.989796677211766
+        },
+        {
+          "longitude": -77.12365454056358,
+          "latitude": -11.98977482687586
+        },
+        {
+          "longitude": -77.12364108013163,
+          "latitude": -11.989816893010003
+        },
+        {
+          "longitude": -77.12375854376586,
+          "latitude": -11.989844076430362
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853561612-f0a561",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12444993112813,
+          "latitude": -11.990952667813989
+        },
+        {
+          "longitude": -77.12443016234631,
+          "latitude": -11.99094753929979
+        },
+        {
+          "longitude": -77.12440770770131,
+          "latitude": -11.991050276639426
+        },
+        {
+          "longitude": -77.12443077936777,
+          "latitude": -11.991056753401049
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853569251-c98de7",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12442356085165,
+          "latitude": -11.990946456061835
+        },
+        {
+          "longitude": -77.1244114469183,
+          "latitude": -11.990942122798431
+        },
+        {
+          "longitude": -77.12437806891386,
+          "latitude": -11.991048117431781
+        },
+        {
+          "longitude": -77.12439563190243,
+          "latitude": -11.991049197057114
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853594455-86ec46",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12474724433281,
+          "latitude": -11.991198410541191
+        },
+        {
+          "longitude": -77.12464220099395,
+          "latitude": -11.991191451645987
+        },
+        {
+          "longitude": -77.1246396611443,
+          "latitude": -11.991222243539154
+        },
+        {
+          "longitude": -77.12474465980368,
+          "latitude": -11.991231602856654
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853607307-1990f5",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12462294389293,
+          "latitude": -11.991182860851476
+        },
+        {
+          "longitude": -77.12462157501376,
+          "latitude": -11.991205577672355
+        },
+        {
+          "longitude": -77.12451135131106,
+          "latitude": -11.99120435160475
+        },
+        {
+          "longitude": -77.12450534475185,
+          "latitude": -11.99118402531732
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853619430-5a48d0",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12473607205897,
+          "latitude": -11.991233010374586
+        },
+        {
+          "longitude": -77.12473589038952,
+          "latitude": -11.99126169263473
+        },
+        {
+          "longitude": -77.1246286150675,
+          "latitude": -11.99125334033272
+        },
+        {
+          "longitude": -77.12462996427435,
+          "latitude": -11.991225883895922
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853641873-0cf777",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12450045657577,
+          "latitude": -11.991195982356793
+        },
+        {
+          "longitude": -77.12449794221203,
+          "latitude": -11.991222279787953
+        },
+        {
+          "longitude": -77.12438874645176,
+          "latitude": -11.991217501028508
+        },
+        {
+          "longitude": -77.12438757788334,
+          "latitude": -11.991195982479637
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853647561-773e85",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12438524845241,
+          "latitude": -11.99113974842064
+        },
+        {
+          "longitude": -77.12438519699344,
+          "latitude": -11.991167278816382
+        },
+        {
+          "longitude": -77.12426740767236,
+          "latitude": -11.991168532950644
+        },
+        {
+          "longitude": -77.12427228383756,
+          "latitude": -11.991142177162363
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853655054-8fedb8",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12402090871761,
+          "latitude": -11.991160085434263
+        },
+        {
+          "longitude": -77.12399414795601,
+          "latitude": -11.991163653936999
+        },
+        {
+          "longitude": -77.12399913261514,
+          "latitude": -11.991266472834456
+        },
+        {
+          "longitude": -77.12402701581523,
+          "latitude": -11.991264083358807
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853726965-17e616",
+      "type": "office",
+      "color": "#d7dde0",
+      "height": 5.5,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12510549174479,
+          "latitude": -11.99176613813501
+        },
+        {
+          "longitude": -77.12510121174635,
+          "latitude": -11.991936807495629
+        },
+        {
+          "longitude": -77.12463232847146,
+          "latitude": -11.991949241198425
+        },
+        {
+          "longitude": -77.12463633008933,
+          "latitude": -11.99179952223497
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853735337-b369f8",
+      "type": "office",
+      "color": "#d7dde0",
+      "height": 5.5,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12505471225286,
+          "latitude": -11.991949287393583
+        },
+        {
+          "longitude": -77.12506317580431,
+          "latitude": -11.992165699232439
+        },
+        {
+          "longitude": -77.12463213713391,
+          "latitude": -11.992186358224147
+        },
+        {
+          "longitude": -77.12462811673522,
+          "latitude": -11.991957553923303
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853744796-e3c019",
+      "type": "office",
+      "color": "#d7dde0",
+      "height": 5.5,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12453096564505,
+          "latitude": -11.992007443759002
+        },
+        {
+          "longitude": -77.12452244427645,
+          "latitude": -11.992111410703126
+        },
+        {
+          "longitude": -77.12454759352637,
+          "latitude": -11.992232134281952
+        },
+        {
+          "longitude": -77.12417599580078,
+          "latitude": -11.992240335235117
+        },
+        {
+          "longitude": -77.12416294297213,
+          "latitude": -11.99211568570299
+        },
+        {
+          "longitude": -77.12417114908169,
+          "latitude": -11.992024201020019
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853754296-133f3c",
+      "type": "office",
+      "color": "#d7dde0",
+      "height": 5.5,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12455605233,
+          "latitude": -11.992236288778033
+        },
+        {
+          "longitude": -77.12453909158869,
+          "latitude": -11.992307052618514
+        },
+        {
+          "longitude": -77.12455612148985,
+          "latitude": -11.992402597669743
+        },
+        {
+          "longitude": -77.12421454227837,
+          "latitude": -11.992418796401916
+        },
+        {
+          "longitude": -77.12419737939668,
+          "latitude": -11.992327520636042
+        },
+        {
+          "longitude": -77.12421407689654,
+          "latitude": -11.992261098930953
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853813934-f4f4c5",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12384800112696,
+          "latitude": -11.9917813877112
+        },
+        {
+          "longitude": -77.12382037164782,
+          "latitude": -11.991788202675313
+        },
+        {
+          "longitude": -77.12384600968434,
+          "latitude": -11.99189842275534
+        },
+        {
+          "longitude": -77.12387483945719,
+          "latitude": -11.991887577623855
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853853369-8bd084",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12452589469834,
+          "latitude": -11.992755756864412
+        },
+        {
+          "longitude": -77.12452862055663,
+          "latitude": -11.992774508373689
+        },
+        {
+          "longitude": -77.12441466740702,
+          "latitude": -11.992783988252354
+        },
+        {
+          "longitude": -77.12441598623137,
+          "latitude": -11.992761249196054
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853862178-49f4da",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12440512883957,
+          "latitude": -11.992762587107098
+        },
+        {
+          "longitude": -77.12440516269486,
+          "latitude": -11.99278131367285
+        },
+        {
+          "longitude": -77.12428723991187,
+          "latitude": -11.992793381076277
+        },
+        {
+          "longitude": -77.12428988600789,
+          "latitude": -11.992771993220186
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853906038-096121",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12440417887633,
+          "latitude": -11.99278628757522
+        },
+        {
+          "longitude": -77.12441108641015,
+          "latitude": -11.992809946940005
+        },
+        {
+          "longitude": -77.1242991580452,
+          "latitude": -11.992820092914108
+        },
+        {
+          "longitude": -77.12429680455026,
+          "latitude": -11.992799830283236
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853915737-99e11f",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12452886053005,
+          "latitude": -11.992782819918641
+        },
+        {
+          "longitude": -77.12452771766249,
+          "latitude": -11.992802002218344
+        },
+        {
+          "longitude": -77.12441336542757,
+          "latitude": -11.992805441639812
+        },
+        {
+          "longitude": -77.12442019831445,
+          "latitude": -11.992788541426673
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853938022-7503d5",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12405657208772,
+          "latitude": -11.992854739030612
+        },
+        {
+          "longitude": -77.12394106048032,
+          "latitude": -11.99287639769263
+        },
+        {
+          "longitude": -77.12394660328533,
+          "latitude": -11.992900238698724
+        },
+        {
+          "longitude": -77.12405989101678,
+          "latitude": -11.992879681026274
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853946090-b330d2",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12406474598748,
+          "latitude": -11.99270590999833
+        },
+        {
+          "longitude": -77.12403936469175,
+          "latitude": -11.992711353186309
+        },
+        {
+          "longitude": -77.12406194589457,
+          "latitude": -11.9928189540263
+        },
+        {
+          "longitude": -77.12408617962569,
+          "latitude": -11.992813528964923
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853965716-1c8670",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12395016258111,
+          "latitude": -11.992734230608466
+        },
+        {
+          "longitude": -77.1239270098177,
+          "latitude": -11.992738580214262
+        },
+        {
+          "longitude": -77.12394307404982,
+          "latitude": -11.99284172442205
+        },
+        {
+          "longitude": -77.1239706100928,
+          "latitude": -11.992839556246444
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853981530-01592f",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12485750721149,
+          "latitude": -11.993146405050116
+        },
+        {
+          "longitude": -77.12485764252551,
+          "latitude": -11.99317048583897
+        },
+        {
+          "longitude": -77.12474122258752,
+          "latitude": -11.993181517553671
+        },
+        {
+          "longitude": -77.12474341669562,
+          "latitude": -11.993157309711062
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853986296-903d7e",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12464044457549,
+          "latitude": -11.993166113329092
+        },
+        {
+          "longitude": -77.12464077505383,
+          "latitude": -11.993192359753104
+        },
+        {
+          "longitude": -77.12452905445896,
+          "latitude": -11.993198906416207
+        },
+        {
+          "longitude": -77.12452895947246,
+          "latitude": -11.99317032963378
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793853993082-552a2c",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12435886827515,
+          "latitude": -11.993148339379038
+        },
+        {
+          "longitude": -77.12435899375912,
+          "latitude": -11.993165917821925
+        },
+        {
+          "longitude": -77.12424325872112,
+          "latitude": -11.993174571609302
+        },
+        {
+          "longitude": -77.1242431655171,
+          "latitude": -11.993156994625172
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854000548-e8abb7",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12436624435168,
+          "latitude": -11.993194350211237
+        },
+        {
+          "longitude": -77.12436412732305,
+          "latitude": -11.993220701544331
+        },
+        {
+          "longitude": -77.12425018301627,
+          "latitude": -11.993216299821386
+        },
+        {
+          "longitude": -77.12425007913305,
+          "latitude": -11.993196536843783
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854015713-fb6140",
+      "type": "vehicle",
+      "color": "#365d73",
+      "height": 1.55,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12525920982975,
+          "latitude": -11.992883738735769
+        },
+        {
+          "longitude": -77.12524362434085,
+          "latitude": -11.992865987149619
+        },
+        {
+          "longitude": -77.12520987472773,
+          "latitude": -11.992890338255018
+        },
+        {
+          "longitude": -77.12511541474072,
+          "latitude": -11.99298766103738
+        },
+        {
+          "longitude": -77.12513561599029,
+          "latitude": -11.993000922212746
+        },
+        {
+          "longitude": -77.12522108580838,
+          "latitude": -11.992908042996925
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854049736-0030e6",
+      "type": "vehicle",
+      "color": "#365d73",
+      "height": 1.55,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12503167447959,
+          "latitude": -11.993028600158047
+        },
+        {
+          "longitude": -77.12502874276741,
+          "latitude": -11.993054583730407
+        },
+        {
+          "longitude": -77.12498915157181,
+          "latitude": -11.99304881804623
+        },
+        {
+          "longitude": -77.12486320061019,
+          "latitude": -11.99305012129103
+        },
+        {
+          "longitude": -77.12486601068463,
+          "latitude": -11.99302569732203
+        },
+        {
+          "longitude": -77.12498768674872,
+          "latitude": -11.993027158330044
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854069313-8c6731",
+      "type": "vehicle",
+      "color": "#365d73",
+      "height": 1.55,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12463475033944,
+          "latitude": -11.992977777487747
+        },
+        {
+          "longitude": -77.12463192340228,
+          "latitude": -11.993000407186958
+        },
+        {
+          "longitude": -77.12459337391509,
+          "latitude": -11.992998928714105
+        },
+        {
+          "longitude": -77.1244758719109,
+          "latitude": -11.993010189059472
+        },
+        {
+          "longitude": -77.12447435004717,
+          "latitude": -11.992987601715699
+        },
+        {
+          "longitude": -77.12459313694272,
+          "latitude": -11.992972105656115
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854083009-c23849",
+      "type": "vehicle",
+      "color": "#365d73",
+      "height": 1.55,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12462454397927,
+          "latitude": -11.99291407231213
+        },
+        {
+          "longitude": -77.12462460704819,
+          "latitude": -11.992942396494314
+        },
+        {
+          "longitude": -77.12458431861619,
+          "latitude": -11.992936733007676
+        },
+        {
+          "longitude": -77.12446989568004,
+          "latitude": -11.99294946061945
+        },
+        {
+          "longitude": -77.12446551014283,
+          "latitude": -11.992929671409096
+        },
+        {
+          "longitude": -77.1245871284444,
+          "latitude": -11.992911238920616
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854094753-30db66",
+      "type": "vehicle",
+      "color": "#365d73",
+      "height": 1.55,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.1246200987754,
+          "latitude": -11.992857372144234
+        },
+        {
+          "longitude": -77.12462015357183,
+          "latitude": -11.992881478154661
+        },
+        {
+          "longitude": -77.12457555385414,
+          "latitude": -11.992878649027787
+        },
+        {
+          "longitude": -77.12445386569202,
+          "latitude": -11.992891482659472
+        },
+        {
+          "longitude": -77.12445371543853,
+          "latitude": -11.992868826363473
+        },
+        {
+          "longitude": -77.12457835259237,
+          "latitude": -11.992855956254873
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854120399-2e73f8",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12464246257649,
+          "latitude": -11.993212646148757
+        },
+        {
+          "longitude": -77.1246449060606,
+          "latitude": -11.99324132305349
+        },
+        {
+          "longitude": -77.12453096284722,
+          "latitude": -11.99324372527773
+        },
+        {
+          "longitude": -77.12453213168408,
+          "latitude": -11.99322222924342
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854134905-ea898e",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12436648381073,
+          "latitude": -11.993237808623244
+        },
+        {
+          "longitude": -77.12436659743109,
+          "latitude": -11.993261652265804
+        },
+        {
+          "longitude": -77.1242516894857,
+          "latitude": -11.993264037785751
+        },
+        {
+          "longitude": -77.12425511747801,
+          "latitude": -11.993237811556018
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854143327-48c170",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12464371460577,
+          "latitude": -11.993261626426715
+        },
+        {
+          "longitude": -77.12464858836566,
+          "latitude": -11.993283103618268
+        },
+        {
+          "longitude": -77.12453713015886,
+          "latitude": -11.993290258531049
+        },
+        {
+          "longitude": -77.12453829042835,
+          "latitude": -11.993266403481822
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854156697-ce068e",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12486471873368,
+          "latitude": -11.99319582192385
+        },
+        {
+          "longitude": -77.12486344872362,
+          "latitude": -11.993220952340051
+        },
+        {
+          "longitude": -77.12475537278466,
+          "latitude": -11.993229311996771
+        },
+        {
+          "longitude": -77.12475296326028,
+          "latitude": -11.99320417994899
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854181329-161577",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12504503460069,
+          "latitude": -11.99138941662141
+        },
+        {
+          "longitude": -77.12504496656,
+          "latitude": -11.991413289342828
+        },
+        {
+          "longitude": -77.12494153962706,
+          "latitude": -11.991417633836429
+        },
+        {
+          "longitude": -77.12493718416263,
+          "latitude": -11.991393751239707
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854194729-b22d6f",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12504784360097,
+          "latitude": -11.991416270570266
+        },
+        {
+          "longitude": -77.12504656489004,
+          "latitude": -11.991436995462214
+        },
+        {
+          "longitude": -77.12493916569684,
+          "latitude": -11.991439293607602
+        },
+        {
+          "longitude": -77.12493920089534,
+          "latitude": -11.991418574439548
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854205226-cbe336",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12504655727474,
+          "latitude": -11.991440444489653
+        },
+        {
+          "longitude": -77.12504768075374,
+          "latitude": -11.99145998307745
+        },
+        {
+          "longitude": -77.12493798144368,
+          "latitude": -11.991461131523648
+        },
+        {
+          "longitude": -77.12493916388404,
+          "latitude": -11.991441592932029
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854215083-330a10",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12504884481034,
+          "latitude": -11.991461132125002
+        },
+        {
+          "longitude": -77.12504879580402,
+          "latitude": -11.99148295660389
+        },
+        {
+          "longitude": -77.12493790121606,
+          "latitude": -11.991485246224533
+        },
+        {
+          "longitude": -77.12494031184808,
+          "latitude": -11.991465727373077
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854222777-9ee39a",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12491820200663,
+          "latitude": -11.991402425328987
+        },
+        {
+          "longitude": -77.12492050927496,
+          "latitude": -11.991419727651413
+        },
+        {
+          "longitude": -77.12481073852878,
+          "latitude": -11.991424343820222
+        },
+        {
+          "longitude": -77.12481074607001,
+          "latitude": -11.99140826066061
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854240601-ac499b",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12491933662429,
+          "latitude": -11.991422033669537
+        },
+        {
+          "longitude": -77.12492048626568,
+          "latitude": -11.991441592933027
+        },
+        {
+          "longitude": -77.12481309544884,
+          "latitude": -11.991445042888477
+        },
+        {
+          "longitude": -77.12481307845374,
+          "latitude": -11.991426646130371
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854255904-3ce957",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12468154326216,
+          "latitude": -11.991453129929207
+        },
+        {
+          "longitude": -77.12468045078377,
+          "latitude": -11.9914806561078
+        },
+        {
+          "longitude": -77.12457103825632,
+          "latitude": -11.991487532957587
+        },
+        {
+          "longitude": -77.12457209843635,
+          "latitude": -11.991463456580066
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854271280-21c46c",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12455209182802,
+          "latitude": -11.991401698762894
+        },
+        {
+          "longitude": -77.1245521528035,
+          "latitude": -11.991424115503378
+        },
+        {
+          "longitude": -77.12444221820321,
+          "latitude": -11.991426604927021
+        },
+        {
+          "longitude": -77.12444085576728,
+          "latitude": -11.991409171945456
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854282195-2f91a2",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12417882366096,
+          "latitude": -11.991405406288678
+        },
+        {
+          "longitude": -77.12417483736286,
+          "latitude": -11.991426565916926
+        },
+        {
+          "longitude": -77.12406380990419,
+          "latitude": -11.991432764310243
+        },
+        {
+          "longitude": -77.12406641533089,
+          "latitude": -11.99141031193539
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854295769-c7bbee",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12430676012487,
+          "latitude": -11.991416629842831
+        },
+        {
+          "longitude": -77.12430571544995,
+          "latitude": -11.991440286963337
+        },
+        {
+          "longitude": -77.12419644737595,
+          "latitude": -11.991444008132811
+        },
+        {
+          "longitude": -77.12419763977108,
+          "latitude": -11.991424075792025
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854309893-ca2757",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12442958988542,
+          "latitude": -11.991429093560194
+        },
+        {
+          "longitude": -77.1244309243768,
+          "latitude": -11.991452726946365
+        },
+        {
+          "longitude": -77.1243197037294,
+          "latitude": -11.991460188910002
+        },
+        {
+          "longitude": -77.12431833691771,
+          "latitude": -11.991436554292973
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854318944-6195fc",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12442967232721,
+          "latitude": -11.99145645728022
+        },
+        {
+          "longitude": -77.12443226180444,
+          "latitude": -11.991477589436768
+        },
+        {
+          "longitude": -77.12432106435794,
+          "latitude": -11.991482567002627
+        },
+        {
+          "longitude": -77.12432478393546,
+          "latitude": -11.9914639191182
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854325473-01426f",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12454964096351,
+          "latitude": -11.991431582009414
+        },
+        {
+          "longitude": -77.1245509293161,
+          "latitude": -11.991447752709355
+        },
+        {
+          "longitude": -77.12444860351904,
+          "latitude": -11.991450239881349
+        },
+        {
+          "longitude": -77.12444476430036,
+          "latitude": -11.991432826068671
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854333127-ac48d6",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12455094072963,
+          "latitude": -11.991455213955064
+        },
+        {
+          "longitude": -77.1245509673509,
+          "latitude": -11.991472618226757
+        },
+        {
+          "longitude": -77.12444866575619,
+          "latitude": -11.99147261816332
+        },
+        {
+          "longitude": -77.12444988060786,
+          "latitude": -11.991455213892944
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854343120-5ab3b9",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.1243019582541,
+          "latitude": -11.99144775131673
+        },
+        {
+          "longitude": -77.12430203788297,
+          "latitude": -11.991465162855054
+        },
+        {
+          "longitude": -77.12420544058577,
+          "latitude": -11.991467668297844
+        },
+        {
+          "longitude": -77.12420153750976,
+          "latitude": -11.991448990362453
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854353675-310472",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12430073142343,
+          "latitude": -11.991472626765505
+        },
+        {
+          "longitude": -77.12430170526,
+          "latitude": -11.991490068125458
+        },
+        {
+          "longitude": -77.12419926081401,
+          "latitude": -11.99149255894084
+        },
+        {
+          "longitude": -77.12419913758242,
+          "latitude": -11.99147140285256
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854364033-04e60a",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12417105654886,
+          "latitude": -11.991430303852603
+        },
+        {
+          "longitude": -77.12417497509169,
+          "latitude": -11.991450235779338
+        },
+        {
+          "longitude": -77.12407030394405,
+          "latitude": -11.991453973661015
+        },
+        {
+          "longitude": -77.12406764010692,
+          "latitude": -11.991436507940413
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854373752-528f81",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12416994499594,
+          "latitude": -11.991455217232698
+        },
+        {
+          "longitude": -77.1241700604092,
+          "latitude": -11.991473892319341
+        },
+        {
+          "longitude": -77.12406921212322,
+          "latitude": -11.991477665229496
+        },
+        {
+          "longitude": -77.12406905524682,
+          "latitude": -11.991456468149494
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854387609-fc76ed",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12417893706782,
+          "latitude": -11.99147762632781
+        },
+        {
+          "longitude": -77.12417652898094,
+          "latitude": -11.991497535214078
+        },
+        {
+          "longitude": -77.1240719477493,
+          "latitude": -11.991505080487165
+        },
+        {
+          "longitude": -77.12407305832056,
+          "latitude": -11.991483897588918
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854393946-9ec4c5",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12417783133066,
+          "latitude": -11.991503754754135
+        },
+        {
+          "longitude": -77.12417793731558,
+          "latitude": -11.991521164440396
+        },
+        {
+          "longitude": -77.12407459930175,
+          "latitude": -11.991521271793685
+        },
+        {
+          "longitude": -77.1240745170404,
+          "latitude": -11.99151006311207
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854412891-23d832",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12458295057552,
+          "latitude": -11.991652110598876
+        },
+        {
+          "longitude": -77.12458305994079,
+          "latitude": -11.991678547495772
+        },
+        {
+          "longitude": -77.12447348039368,
+          "latitude": -11.991682618693023
+        },
+        {
+          "longitude": -77.12447132971222,
+          "latitude": -11.99166024535201
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854430135-13266f",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12471327546716,
+          "latitude": -11.99166227663057
+        },
+        {
+          "longitude": -77.12471333776237,
+          "latitude": -11.991694814778084
+        },
+        {
+          "longitude": -77.1246059077035,
+          "latitude": -11.991702933939568
+        },
+        {
+          "longitude": -77.1246037284516,
+          "latitude": -11.991676513865068
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854441288-bc362d",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12502138550836,
+          "latitude": -11.991646027123245
+        },
+        {
+          "longitude": -77.1250234411303,
+          "latitude": -11.991668407522162
+        },
+        {
+          "longitude": -77.12496552879756,
+          "latitude": -11.991666372821363
+        },
+        {
+          "longitude": -77.12496345904248,
+          "latitude": -11.991646027118321
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854460448-c482e1",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.1239460589763,
+          "latitude": -11.992004888781471
+        },
+        {
+          "longitude": -77.12391343727296,
+          "latitude": -11.992011316002168
+        },
+        {
+          "longitude": -77.12393351273263,
+          "latitude": -11.992120531183925
+        },
+        {
+          "longitude": -77.12397261036617,
+          "latitude": -11.9921109062223
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854486867-faaa0e",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12406171209723,
+          "latitude": -11.992585855192097
+        },
+        {
+          "longitude": -77.12403496087445,
+          "latitude": -11.992591124382791
+        },
+        {
+          "longitude": -77.12405857449329,
+          "latitude": -11.992694655200895
+        },
+        {
+          "longitude": -77.12408530937307,
+          "latitude": -11.992691148793067
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854508281-5ddaba",
+      "type": "vehicle",
+      "color": "#365d73",
+      "height": 1.55,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12439164493989,
+          "latitude": -11.992545419585475
+        },
+        {
+          "longitude": -77.1243916591028,
+          "latitude": -11.992577110645664
+        },
+        {
+          "longitude": -77.12430046236035,
+          "latitude": -11.992564786191295
+        },
+        {
+          "longitude": -77.12430415069595,
+          "latitude": -11.992543669072841
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854544105-372d81",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12328624016203,
+          "latitude": -11.989684393421246
+        },
+        {
+          "longitude": -77.12325480214726,
+          "latitude": -11.989687914617871
+        },
+        {
+          "longitude": -77.12326916072797,
+          "latitude": -11.989802106873748
+        },
+        {
+          "longitude": -77.12329698848494,
+          "latitude": -11.989793481237225
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854560879-9fe62e",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12331797894514,
+          "latitude": -11.989826910529029
+        },
+        {
+          "longitude": -77.12329141779051,
+          "latitude": -11.98982575157748
+        },
+        {
+          "longitude": -77.12330243370903,
+          "latitude": -11.989927011419983
+        },
+        {
+          "longitude": -77.12332527180683,
+          "latitude": -11.989929392620045
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854594923-47bb5f",
+      "type": "container",
+      "color": "#cf6b38",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12396904733338,
+          "latitude": -11.992129138822422
+        },
+        {
+          "longitude": -77.12393793745743,
+          "latitude": -11.99213680298023
+        },
+        {
+          "longitude": -77.12396166439653,
+          "latitude": -11.992233817337302
+        },
+        {
+          "longitude": -77.12399269276234,
+          "latitude": -11.992226167504558
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854622207-79612e",
+      "type": "container",
+      "color": "#cf6b38",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.1240292857465,
+          "latitude": -11.992353690320408
+        },
+        {
+          "longitude": -77.12399830387082,
+          "latitude": -11.992358752540747
+        },
+        {
+          "longitude": -77.12402470011877,
+          "latitude": -11.992460487101555
+        },
+        {
+          "longitude": -77.12405566782463,
+          "latitude": -11.992460543261236
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854829951-ce5df5",
+      "type": "container",
+      "color": "#246b8f",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12383199794398,
+          "latitude": -11.992153687879352
+        },
+        {
+          "longitude": -77.12381010444011,
+          "latitude": -11.992157491880507
+        },
+        {
+          "longitude": -77.12383725152341,
+          "latitude": -11.992266392675313
+        },
+        {
+          "longitude": -77.12385654596548,
+          "latitude": -11.992258797597536
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854857103-3ef688",
+      "type": "container",
+      "color": "#246b8f",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12380238269505,
+          "latitude": -11.992162563354444
+        },
+        {
+          "longitude": -77.12378060485294,
+          "latitude": -11.992170162256787
+        },
+        {
+          "longitude": -77.12381162440244,
+          "latitude": -11.99226755233017
+        },
+        {
+          "longitude": -77.12382824556283,
+          "latitude": -11.992265128029484
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854872167-59b9fe",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12382929168808,
+          "latitude": -11.992031761035523
+        },
+        {
+          "longitude": -77.12380865702627,
+          "latitude": -11.99203812013119
+        },
+        {
+          "longitude": -77.12383842963642,
+          "latitude": -11.992143542149691
+        },
+        {
+          "longitude": -77.12385775740418,
+          "latitude": -11.99214227529116
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854912278-1b76d0",
+      "type": "container",
+      "color": "#d0a625",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.123886315682,
+          "latitude": -11.992257889659449
+        },
+        {
+          "longitude": -77.12386549231871,
+          "latitude": -11.992265125271148
+        },
+        {
+          "longitude": -77.12389002362112,
+          "latitude": -11.99236978003108
+        },
+        {
+          "longitude": -77.12390836727386,
+          "latitude": -11.99236857852508
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854922796-3e5d5f",
+      "type": "container",
+      "color": "#d0a625",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12387427640789,
+          "latitude": -11.991905889774392
+        },
+        {
+          "longitude": -77.1238481736799,
+          "latitude": -11.99191443325097
+        },
+        {
+          "longitude": -77.1238725648326,
+          "latitude": -11.99201358764884
+        },
+        {
+          "longitude": -77.12389690423396,
+          "latitude": -11.992008492839615
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854954367-0c6e5e",
+      "type": "container",
+      "color": "#d0a625",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12375928215019,
+          "latitude": -11.991803038729925
+        },
+        {
+          "longitude": -77.12373141219093,
+          "latitude": -11.99181332872605
+        },
+        {
+          "longitude": -77.12375953026243,
+          "latitude": -11.991919493645906
+        },
+        {
+          "longitude": -77.12378032485249,
+          "latitude": -11.991912697041368
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854975670-e2d834",
+      "type": "container",
+      "color": "#6d7d84",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12383934314383,
+          "latitude": -11.991667307754188
+        },
+        {
+          "longitude": -77.12381840865416,
+          "latitude": -11.991672467656187
+        },
+        {
+          "longitude": -77.1238463673052,
+          "latitude": -11.991779000602317
+        },
+        {
+          "longitude": -77.12387250899206,
+          "latitude": -11.99177727047623
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793854995215-542d60",
+      "type": "container",
+      "color": "#6d7d84",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12372144513203,
+          "latitude": -11.991689652773982
+        },
+        {
+          "longitude": -77.12369865029196,
+          "latitude": -11.991695638391324
+        },
+        {
+          "longitude": -77.12373064612332,
+          "latitude": -11.991797365067436
+        },
+        {
+          "longitude": -77.1237488725749,
+          "latitude": -11.991797365075184
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793855004805-b1416b",
+      "type": "container",
+      "color": "#6d7d84",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12377003902562,
+          "latitude": -11.991676135519185
+        },
+        {
+          "longitude": -77.12374271545744,
+          "latitude": -11.991683661889287
+        },
+        {
+          "longitude": -77.12377312783302,
+          "latitude": -11.991792878257572
+        },
+        {
+          "longitude": -77.123792875687,
+          "latitude": -11.991786893751009
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793855046807-7a330d",
+      "type": "container",
+      "color": "#b54735",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12389464717232,
+          "latitude": -11.992390782083865
+        },
+        {
+          "longitude": -77.12386052741877,
+          "latitude": -11.992398244085479
+        },
+        {
+          "longitude": -77.12388915099109,
+          "latitude": -11.992495227644792
+        },
+        {
+          "longitude": -77.12391373309788,
+          "latitude": -11.992491506078908
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793855057918-43ac0f",
+      "type": "container",
+      "color": "#6d7d84",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12402938535024,
+          "latitude": -11.992473004759182
+        },
+        {
+          "longitude": -77.1240053627011,
+          "latitude": -11.992481445778111
+        },
+        {
+          "longitude": -77.12402938913196,
+          "latitude": -11.992584381032751
+        },
+        {
+          "longitude": -77.1240533877279,
+          "latitude": -11.992574256884867
+        }
+      ]
+    },
+    {
+      "id": "drawn-area-1793855163692-4401fc",
+      "type": "container",
+      "color": "#246b8f",
+      "height": 2.7,
+      "geometry": "polygon",
+      "vertices": [
+        {
+          "longitude": -77.12360360323416,
+          "latitude": -11.991232359746496
+        },
+        {
+          "longitude": -77.12356750658779,
+          "latitude": -11.991239022455805
+        },
+        {
+          "longitude": -77.12359914655279,
+          "latitude": -11.991350009186228
+        },
+        {
+          "longitude": -77.1236239476151,
+          "latitude": -11.991338918367681
+        }
+      ]
+    }
+  ]
+}

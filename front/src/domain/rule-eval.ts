@@ -213,9 +213,7 @@ function decide(
     case 'sentido_contrario':
       return crossed;
     case 'acceso_restringido':
-      return rule.minDwellSeconds > 0
-        ? dwellSeconds >= rule.minDwellSeconds
-        : dwellSeconds > 0;
+      return rule.minDwellSeconds > 0 ? dwellSeconds >= rule.minDwellSeconds : dwellSeconds > 0;
     case 'agrupacion':
       return objectCount >= 2;
     case 'presencia':

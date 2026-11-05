@@ -25,6 +25,7 @@ import {
   Mesh,
   MeshStandardMaterial,
   PlaneGeometry,
+  PointLight,
   Shape,
   ShapeGeometry,
   Vector3,
@@ -44,6 +45,8 @@ import { PALETTE } from './palette';
 
 export interface WorldHandles {
   group: Group;
+  /** Enciende o apaga el alumbrado perimetral (0 = día, > 0 = noche). */
+  setLampIntensity: (intensity: number) => void;
   dispose: () => void;
 }
 
@@ -280,6 +283,9 @@ export function buildWorld(): WorldHandles {
   }
 
   /* Alumbrado perimetral. */
+  const lampMaterials: MeshStandardMaterial[] = [];
+  const lampLights: PointLight[] = [];
+
   for (const light of PLAN_LIGHTS) {
     const poleGeometry = track(new CylinderGeometry(0.11, 0.15, light.height, 8));
     const poleMaterial = track(
@@ -304,13 +310,29 @@ export function buildWorld(): WorldHandles {
         roughness: 0.4,
       }),
     );
+    lampMaterials.push(headMaterial);
     const head = new Mesh(headGeometry, headMaterial);
     head.position.set(position.x, light.height + 0.1, position.z);
     group.add(head);
+
+    // Un punto de luz real sobre la luminaria más próxima: de noche el
+    // alumbrado perimetral aporta al terreno, no sólo al poste.
+    const lamp = new PointLight(PALETTE.lamp, 0, 26, 2);
+    lamp.position.set(position.x, light.height, position.z);
+    group.add(lamp);
+    lampLights.push(lamp);
   }
 
   return {
     group,
+    setLampIntensity: (intensity: number) => {
+      for (const material of lampMaterials) {
+        material.emissiveIntensity = 0.15 + intensity * 1.45;
+      }
+      for (const lamp of lampLights) {
+        lamp.intensity = intensity * 9;
+      }
+    },
     dispose: () => {
       for (const disposable of disposables) disposable.dispose();
     },

@@ -6,17 +6,11 @@ import {
   irIlluminationAt,
   noiseLevel,
   resolveIllumination,
-  stepIcrBlend,
 } from '@/domain/imaging';
+import gsap from 'gsap';
 import { hashSeed } from '@/domain/rng';
 import { computeTrackedObjects, type TrackedObject } from '@/domain/track-motion';
-import type {
-  Camera,
-  CameraTrackTarget,
-  IlluminationPreference,
-  VirtualLine,
-  Zone,
-} from '@/domain/types';
+import type { Camera, CameraTrackTarget, SceneHour, VirtualLine, Zone } from '@/domain/types';
 import { renderBackground, type BackgroundMode } from './background';
 import { getGrainTiles, getScanlinePattern } from './noise';
 import { drawOsd } from './osd';
@@ -52,7 +46,7 @@ export interface FeedRendererOptions {
   /** Modo evidencia: resalta la detección y añade la banda de identificación. */
   evidence: boolean;
   /** Preferencia de iluminación forzada por el operador. */
-  illumination: IlluminationPreference;
+  sceneHour: SceneHour;
   /**
    * Segundo actual de la línea de tiempo simulada.
    *
@@ -105,11 +99,39 @@ export function createFeedRenderer(
   const trails = new MotionTrails();
   const grainTiles = getGrainTiles();
   let grainIndex = 0;
-  let irBlend = -1;
   let lastMode: BackgroundMode = 'noche';
   let frozenFrame: HTMLCanvasElement | null = null;
   let frozenKey = '';
   let lastElapsedMs = 0;
+
+  /*
+   * Conmutación ICR: GSAP conduce el fundido del filtro IR-cut. El valor vive
+   * en un objeto plano y el renderizador lo lee en cada fotograma, así que la
+   * transición es suave sin bloquear el lienzo.
+   */
+  const irState = { value: 0 };
+  let irTween: gsap.core.Tween | null = null;
+  let irInitialized = false;
+
+  /*
+   * Movimiento reducido: el lienzo no depende de CSS, así que la preferencia
+   * del sistema se consulta aquí. Sin pulso y sin fundido de ICR: el estado
+   * final se aplica de inmediato y el trazo de las detecciones queda fijo.
+   */
+  const reducedMotion =
+    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Pulso de las cajas de detección: un tween en bucle modula el trazo. */
+  const pulseState = { value: 0 };
+  const pulseTween = reducedMotion
+    ? null
+    : gsap.to(pulseState, {
+        value: 1,
+        duration: 1.3,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+      });
 
   function ensureBackground(
     mode: BackgroundMode,
@@ -145,13 +167,12 @@ export function createFeedRenderer(
     if (canvas.width !== width || canvas.height !== height) {
       canvas.width = width;
       canvas.height = height;
-      irBlend = -1;
     }
 
     const timestamp =
       current.timestampMs ??
       (current.getClockMs ? current.getClockMs() : PLATFORM_NOW_MS + elapsedMs);
-    const illumination = resolveIllumination(current.illumination, timestamp);
+    const illumination = resolveIllumination(current.sceneHour, timestamp);
     const icr = icrState(illumination);
     const mode: BackgroundMode = illumination === 'dia' ? 'dia' : 'noche';
 
@@ -160,11 +181,31 @@ export function createFeedRenderer(
       frozenFrame = null;
     }
 
-    // Fundido de conmutación ICR: el primer fotograma arranca en el estado
-    // contrario para que el cambio sea visible, como en un equipo real.
+    /*
+     * Fundido de conmutación ICR: el primer fotograma arranca en el estado
+     * contrario para que el cambio sea visible, como en un equipo real. A
+     * partir de ahí GSAP lleva la mezcla de forma continua.
+     */
     const targetBlend = icr.monochromeBlend;
-    if (irBlend < 0) irBlend = targetBlend > 0.5 ? 0 : 1;
-    irBlend = stepIcrBlend(irBlend, targetBlend, 66);
+    if (!irInitialized) {
+      irInitialized = true;
+      irState.value = targetBlend > 0.5 ? 0 : 1;
+    }
+    if (Math.abs(irState.value - targetBlend) > 0.002) {
+      irTween?.kill();
+      irTween = null;
+      if (reducedMotion) {
+        irState.value = targetBlend;
+      } else {
+        irTween = gsap.to(irState, {
+          value: targetBlend,
+          duration: 1.1,
+          ease: 'power2.inOut',
+          overwrite: true,
+        });
+      }
+    }
+    const irBlend = irState.value;
 
     ctx.save();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -233,7 +274,7 @@ export function createFeedRenderer(
     const dy = (height - drawH) / 2;
 
     const mode: BackgroundMode =
-      resolveIllumination(current.illumination, timestamp) === 'dia' ? 'dia' : 'noche';
+      resolveIllumination(current.sceneHour, timestamp) === 'dia' ? 'dia' : 'noche';
     const background = ensureBackground(mode, width, height);
 
     // El filtro ICR actúa sobre la respuesta espectral: la escena no cambia,
@@ -281,7 +322,7 @@ export function createFeedRenderer(
       if (highlight) drawEvidenceBox(target, width, height, highlight);
     } else if (current.showDetections) {
       for (const object of objects) {
-        drawDetectionBox(target, width, height, object, current.compact);
+        drawDetectionBox(target, width, height, object, current.compact, pulseState.value);
       }
     }
   }
@@ -324,6 +365,8 @@ export function createFeedRenderer(
       }
     },
     destroy: () => {
+      irTween?.kill();
+      pulseTween?.kill();
       backgrounds.forEach((background) => {
         background.width = 0;
         background.height = 0;
@@ -504,6 +547,7 @@ function drawDetectionBox(
   height: number,
   object: TrackedObject,
   compact: boolean,
+  pulse: number,
 ): void {
   const x = object.x * width;
   const y = object.y * height + object.bob * height;
@@ -514,10 +558,14 @@ function drawDetectionBox(
     object.confidence * 100,
   )}%`;
 
+  ctx.save();
+  // El pulso modula la opacidad del trazo: la caja "respira" sin parpadear.
+  ctx.globalAlpha = 0.72 + pulse * 0.28;
   ctx.strokeStyle = color;
-  ctx.lineWidth = 1.4;
+  ctx.lineWidth = 1.4 + pulse * 0.6;
   ctx.strokeRect(x, y, w, h);
-  drawCornerBrackets(ctx, x, y, w, h, color, 2.4);
+  drawCornerBrackets(ctx, x, y, w, h, color, 2.4 + pulse * 1.2);
+  ctx.restore();
 
   if (compact) return;
 

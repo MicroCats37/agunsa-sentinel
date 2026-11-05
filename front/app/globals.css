@@ -3,17 +3,31 @@
 @import 'shadcn/tailwind.css';
 
 /*
- * AGUNSA Sentinel — sistema de tokens.
+ * AGUNSA Sentinel — design tokens.
  *
- * Tema oscuro como apariencia principal (sin modo claro: la plataforma es una
- * herramienta de sala de control). Paleta semántica de operación:
- *   rojo = alerta crítica · ámbar = advertencia · verde = normal · azul = acción.
+ * The light palette comes from the sibling project `agunsa-seguridad`, the
+ * source of truth for the AGUNSA identity: navy `#163240`, teal accent
+ * `#2e8b83` and a **bone white** `#f4f1ea` surface for daytime work.
+ *
+ * Two designed themes, not one inverted:
+ *   · light = bone white, the daytime variant (reporting and review);
+ *   · dark  = near-black canvas `#0a0a0a`, the control room.
+ *
+ * The dark theme follows the reference product language: an almost black
+ * canvas, slightly lighter cards (`#141414`) separated by a white hairline
+ * at 8%, a near-white primary action and colour reserved for semantics.
+ *
+ * Semantic operation palette, identical in both themes:
+ *   red = critical alert · amber = warning · green = normal.
+ * Navy is the brand and selection colour in the light theme; in the dark one
+ * teal takes that role because navy fades against a dark surface.
  */
 
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-sans: var(--font-ibm-plex-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
 
   /* Colores semánticos de operación. */
   --color-critical: oklch(0.62 0.21 25);
@@ -27,6 +41,48 @@
   --color-brand-navy: oklch(0.47 0.105 251);
   --color-brand-steel: oklch(0.62 0.028 250);
   --color-brand-concrete: oklch(0.74 0.012 250);
+
+  /*
+   * Tokens AGUNSA portados del proyecto hermano. Se declaran como colores
+   * de Tailwind para que el panel de cristal, la escena geoespacial y los
+   * componentes de la aplicación compartan exactamente los mismos valores.
+   */
+  --color-agunsa-navy: #163240;
+  --color-agunsa-navy-soft: #1e3f4f;
+  --color-agunsa-teal: #2e8b83;
+  --color-agunsa-teal-strong: #1d6f69;
+  --color-agunsa-bone: #f4f1ea;
+  --color-agunsa-bone-soft: #faf8f3;
+  --color-agunsa-rule: #e2ddd2;
+
+  /* Colores de la clasificación del assessment CCTV (paleta del informe). */
+  --color-assessment-buena: #2f8f5b;
+  --color-assessment-limitada: #d59616;
+  --color-assessment-deficiente: #c8202a;
+  --color-assessment-sin-imagen: #6e7880;
+
+  /*
+   * Escala de elevación.
+   *
+   * Una superficie declara su profundidad UNA sola vez: sombra ancha sin
+   * borde, o borde sin sombra ancha. Nunca ambas (produce "ghost card").
+   *
+   * Tailwind v4 inlinea los valores estáticos de `--shadow-*` dentro de la
+   * utilidad, así que el token apunta a la variable de tema: la utilidad
+   * `shadow-card` resuelve en tiempo de ejecución y el tema oscuro puede
+   * redefinir la profundidad sin recompilar nada.
+   */
+  --shadow-card: var(--elevation-card);
+  --shadow-raised: var(--elevation-raised);
+  --shadow-overlay: var(--elevation-overlay);
+
+  /* Escala de motion: duraciones y curvas del sistema. */
+  --duration-fast: 140ms;
+  --duration-base: 200ms;
+  --duration-slow: 280ms;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 @theme inline {
@@ -45,6 +101,8 @@
   --color-chart-3: var(--chart-3);
   --color-chart-2: var(--chart-2);
   --color-chart-1: var(--chart-1);
+  /* Neutral grey series for reference charts (grey bars). */
+  --color-chart-6: var(--chart-6);
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -66,81 +124,168 @@
 
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
+  /* Buttons and inputs sit at ~10px, cards at ~17px: `rounded-lg` / `rounded-xl`. */
+  --radius-lg: calc(var(--radius) * 0.8);
   --radius-xl: calc(var(--radius) * 1.4);
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/*
+ * Light theme — AGUNSA bone white.
+ *
+ * Not the dark theme inverted: the canvas is the brand bone white (#f4f1ea),
+ * surfaces are separated by luminosity and a hairline border, and navy
+ * (#163240) carries weight in selection and actions.
+ */
 :root {
-  --background: oklch(0.16 0.012 258);
-  --foreground: oklch(0.94 0.005 250);
-  --card: oklch(0.195 0.014 258);
-  --card-foreground: oklch(0.94 0.005 250);
-  --popover: oklch(0.21 0.016 258);
-  --popover-foreground: oklch(0.95 0.005 250);
-  --primary: oklch(0.47 0.105 251);
-  --primary-foreground: oklch(0.97 0.004 250);
-  --secondary: oklch(0.265 0.016 258);
-  --secondary-foreground: oklch(0.93 0.005 250);
-  --muted: oklch(0.245 0.014 258);
-  --muted-foreground: oklch(0.685 0.018 255);
-  --accent: oklch(0.285 0.018 258);
-  --accent-foreground: oklch(0.94 0.005 250);
-  --destructive: oklch(0.62 0.21 25);
-  --border: oklch(0.305 0.016 258);
-  --input: oklch(0.315 0.018 258);
-  --ring: oklch(0.66 0.125 243);
-  --chart-1: oklch(0.66 0.125 243);
-  --chart-2: oklch(0.72 0.17 152);
-  --chart-3: oklch(0.78 0.155 72);
-  --chart-4: oklch(0.62 0.21 25);
-  --chart-5: oklch(0.66 0.15 288);
-  --radius: 0.5rem;
+  --background: #f4f1ea;
+  --foreground: #1e2a32;
+  --card: #ffffff;
+  --card-foreground: #1e2a32;
+  --popover: #ffffff;
+  --popover-foreground: #1e2a32;
+  --primary: #163240;
+  --primary-foreground: #f4f1ea;
+  --secondary: #faf8f3;
+  --secondary-foreground: #1e2a32;
+  --muted: #efece4;
+  --muted-foreground: #5f6b74;
+  --accent: #e4f1ef;
+  --accent-foreground: #1d6f69;
+  --destructive: #c8202a;
+  --border: #e2ddd2;
+  --input: #d6d0c4;
+  --ring: #2e8b83;
+  --chart-1: #2e8b83;
+  --chart-2: #163240;
+  --chart-3: #d59616;
+  --chart-4: #c8202a;
+  --chart-5: #6e7880;
+  --chart-6: #8a8a8a;
 
-  --sidebar: oklch(0.178 0.014 258);
-  --sidebar-foreground: oklch(0.93 0.006 250);
-  --sidebar-primary: oklch(0.47 0.105 251);
-  --sidebar-primary-foreground: oklch(0.97 0.004 250);
-  --sidebar-accent: oklch(0.255 0.016 258);
-  --sidebar-accent-foreground: oklch(0.95 0.005 250);
-  --sidebar-border: oklch(0.29 0.016 258);
-  --sidebar-ring: oklch(0.66 0.125 243);
+  /* Escala de elevación (tema claro). */
+  --elevation-card: 0 1px 2px rgb(3 15 22 / 0.05), 0 8px 24px -14px rgb(3 15 22 / 0.18);
+  --elevation-raised: 0 2px 4px rgb(3 15 22 / 0.05), 0 18px 40px -18px rgb(3 15 22 / 0.28);
+  --elevation-overlay: 0 24px 60px -22px rgb(3 15 22 / 0.38);
+
+  --radius: 0.75rem;
+
+  --sidebar: #faf8f3;
+  --sidebar-foreground: #1e2a32;
+  --sidebar-primary: #163240;
+  --sidebar-primary-foreground: #f4f1ea;
+  --sidebar-accent: #e4f1ef;
+  --sidebar-accent-foreground: #1d6f69;
+  --sidebar-border: #e2ddd2;
+  --sidebar-ring: #2e8b83;
+
+  /* Estados de cámara (tokens AGUNSA). */
+  --camera-online: #2ba59e;
+  --camera-alarm: #c8202a;
+  --camera-connecting: #d98a10;
+  --camera-offline: #8a939a;
+
+  /* Plano 2D: papel técnico blanco hueso. */
+  --map-bg: #f4f1ea;
+  --map-grid: #e6e1d5;
+  --map-hatch: #ded8ca;
+  --map-building: #ffffff;
+  --map-building-stroke: #c3bcae;
+  --map-fence: #163240;
+  --map-label: #46535d;
+  --map-text: #1e2a32;
+  --map-annotation: #2e8b83;
+
+  /* Cristal AGUNSA: azul marino translúcido con filete de luz. */
+  --glass-bg: rgba(16, 42, 54, 0.74);
+  --glass-bg-strong: rgba(12, 34, 45, 0.86);
+  --glass-border: rgba(173, 211, 219, 0.24);
+  --glass-text: #eef6f7;
+  --glass-muted: #a9bcc6;
+  --glass-shadow: 0 18px 46px rgba(3, 15, 22, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
+/*
+ * Dark theme — the control room.
+ *
+ * Near-black canvas with a real surface hierarchy: canvas < card < popover.
+ * Surfaces are separated by a white hairline at 8% instead of a shadow, the
+ * primary action is near-white, and colour is reserved for semantics.
+ * Secondary text stays above 4.5:1 on the canvas.
+ */
 .dark {
-  --background: oklch(0.16 0.012 258);
-  --foreground: oklch(0.94 0.005 250);
-  --card: oklch(0.195 0.014 258);
-  --card-foreground: oklch(0.94 0.005 250);
-  --popover: oklch(0.21 0.016 258);
-  --popover-foreground: oklch(0.95 0.005 250);
-  --primary: oklch(0.47 0.105 251);
-  --primary-foreground: oklch(0.97 0.004 250);
-  --secondary: oklch(0.265 0.016 258);
-  --secondary-foreground: oklch(0.93 0.005 250);
-  --muted: oklch(0.245 0.014 258);
-  --muted-foreground: oklch(0.685 0.018 255);
-  --accent: oklch(0.285 0.018 258);
-  --accent-foreground: oklch(0.94 0.005 250);
-  --destructive: oklch(0.62 0.21 25);
-  --border: oklch(0.305 0.016 258);
-  --input: oklch(0.315 0.018 258);
-  --ring: oklch(0.66 0.125 243);
-  --chart-1: oklch(0.66 0.125 243);
-  --chart-2: oklch(0.72 0.17 152);
-  --chart-3: oklch(0.78 0.155 72);
-  --chart-4: oklch(0.62 0.21 25);
-  --chart-5: oklch(0.66 0.15 288);
-  --sidebar: oklch(0.178 0.014 258);
-  --sidebar-foreground: oklch(0.93 0.006 250);
-  --sidebar-primary: oklch(0.47 0.105 251);
-  --sidebar-primary-foreground: oklch(0.97 0.004 250);
-  --sidebar-accent: oklch(0.255 0.016 258);
-  --sidebar-accent-foreground: oklch(0.95 0.005 250);
-  --sidebar-border: oklch(0.29 0.016 258);
-  --sidebar-ring: oklch(0.66 0.125 243);
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+  --card: #141414;
+  --card-foreground: #fafafa;
+  --popover: #171717;
+  --popover-foreground: #fafafa;
+  --primary: #fafafa;
+  --primary-foreground: #0a0a0a;
+  --secondary: #1c1c1c;
+  --secondary-foreground: #fafafa;
+  --muted: #1c1c1c;
+  --muted-foreground: #a1a1a1;
+  --accent: #262626;
+  --accent-foreground: #fafafa;
+  --destructive: #e5484d;
+  --destructive-foreground: #fafafa;
+  --border: rgb(255 255 255 / 0.08);
+  --input: rgb(255 255 255 / 0.12);
+  --ring: #2e8b83;
+  --chart-1: #2e8b83;
+  --chart-2: #3fb27f;
+  --chart-3: #e8a33d;
+  --chart-4: #e5484d;
+  --chart-5: #78849a;
+  --chart-6: #a1a1a1;
+
+  /*
+   * Elevación en sala de control: la sombra difusa casi no lee sobre papel
+   * oscuro, así que la profundidad se construye con un highlight interior y
+   * una sombra externa contenida.
+   */
+  --elevation-card: inset 0 1px 0 rgb(255 255 255 / 0.045), 0 10px 30px -18px rgb(0 0 0 / 0.75);
+  --elevation-raised: inset 0 1px 0 rgb(255 255 255 / 0.07), 0 22px 50px -22px rgb(0 0 0 / 0.85);
+  --elevation-overlay: 0 28px 70px -26px rgb(0 0 0 / 0.9);
+
+  --radius: 0.75rem;
+
+  --sidebar: #0a0a0a;
+  --sidebar-foreground: #fafafa;
+  --sidebar-primary: #fafafa;
+  --sidebar-primary-foreground: #0a0a0a;
+  --sidebar-accent: #1c1c1c;
+  --sidebar-accent-foreground: #fafafa;
+  --sidebar-border: rgb(255 255 255 / 0.08);
+  --sidebar-ring: #fafafa;
+
+  /* Estados de cámara (tokens AGUNSA). */
+  --camera-online: #2ba59e;
+  --camera-alarm: #e5484d;
+  --camera-connecting: #e8a33d;
+  --camera-offline: #8a939a;
+
+  /* Plano 2D: sala de control. */
+  --map-bg: #0a1a23;
+  --map-grid: #12262f;
+  --map-hatch: #16303a;
+  --map-building: #102530;
+  --map-building-stroke: #2c4956;
+  --map-fence: #4c9f98;
+  --map-label: #a9bcc6;
+  --map-text: #eef6f7;
+  --map-annotation: #2e8b83;
+
+  /* Cristal AGUNSA en sala de control: más profundo, mismo lenguaje. */
+  --glass-bg: rgba(8, 26, 34, 0.82);
+  --glass-bg-strong: rgba(6, 20, 27, 0.9);
+  --glass-border: rgba(173, 211, 219, 0.2);
+  --glass-text: #eef6f7;
+  --glass-muted: #a9bcc6;
+  --glass-shadow: 0 18px 46px rgba(3, 15, 22, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 @layer base {
@@ -150,10 +295,15 @@
 
   body {
     @apply bg-background text-foreground antialiased;
+    caret-color: var(--ring);
   }
 
   html {
     @apply font-sans;
+    color-scheme: light;
+  }
+
+  html.dark {
     color-scheme: dark;
   }
 
@@ -162,6 +312,12 @@
     outline: 2px solid var(--ring);
     outline-offset: 2px;
     border-radius: 2px;
+  }
+
+  /* Selección de texto con la identidad del producto. */
+  ::selection {
+    background: var(--accent);
+    color: var(--accent-foreground);
   }
 
   /* Cifras alineadas en tablas, tiles y matrices. */
@@ -187,6 +343,132 @@
   ::-webkit-scrollbar-thumb:hover {
     background: var(--muted-foreground);
   }
+}
+
+/*
+ * Panel de cristal AGUNSA.
+ *
+ * Superficie azul marino translúcida con desenfoque de fondo, filete claro y
+ * brillo interior: el mismo lenguaje de los paneles del proyecto hermano,
+ * reutilizado para que las dos aplicaciones se lean como un solo producto.
+ */
+.glass-panel {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  background-color: var(--glass-bg);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(18px) saturate(135%);
+  -webkit-backdrop-filter: blur(18px) saturate(135%);
+  transition:
+    box-shadow 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.glass-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(115deg, rgba(255, 255, 255, 0.1), transparent 42%);
+}
+
+.glass-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+.glass-panel.is-dragging {
+  box-shadow:
+    0 22px 54px rgba(3, 15, 22, 0.46),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/**
+ * Miniatura de la cámara seleccionada dentro de la vista geoespacial.
+ *
+ * Va anclada a la esquina inferior derecha del visor: el operador ve el vídeo
+ * mientras encuadra la cámara, sin tapar el terreno.
+ */
+.scene-feed {
+  position: absolute;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  background-color: var(--glass-bg);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(18px) saturate(135%);
+  -webkit-backdrop-filter: blur(18px) saturate(135%);
+}
+
+.glass-panel__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.glass-panel.is-dragging .glass-panel__head {
+  cursor: grabbing;
+}
+
+.glass-panel__grip {
+  flex: none;
+  color: var(--glass-muted);
+  opacity: 0.8;
+}
+
+.glass-panel__title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--glass-text);
+}
+
+.glass-panel__subtitle {
+  font-size: 11px;
+  color: var(--glass-muted);
+}
+
+.glass-panel__action {
+  display: inline-flex;
+  height: 26px;
+  width: 26px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--glass-text);
+  transition: background-color 160ms ease;
+}
+
+.glass-panel__action:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.glass-panel__body {
+  display: grid;
+  grid-template-rows: 1fr;
+  opacity: 1;
+  padding: 0 12px 12px;
+  transition:
+    grid-template-rows 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 220ms ease;
+}
+
+.glass-panel__body[data-collapsed='true'] {
+  grid-template-rows: 0fr;
+  opacity: 0;
+  padding-bottom: 0;
+}
+
+.glass-panel__body > * {
+  overflow: hidden;
+  min-height: 0;
 }
 
 /*

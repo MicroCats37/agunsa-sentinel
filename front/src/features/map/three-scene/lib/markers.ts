@@ -1,5 +1,5 @@
 import { planToWorld } from '@/data/plan';
-import type { Camera, CameraStatus } from '@/domain/types';
+import type { Camera } from '@/domain/types';
 import {
   AdditiveBlending,
   BoxGeometry,
@@ -19,7 +19,7 @@ import {
   SpriteMaterial,
   SphereGeometry,
 } from 'three';
-import { PALETTE, STATUS_COLOR } from './palette';
+import { CLASSIFICATION_COLOR, PALETTE } from './palette';
 
 /**
  * Marcadores de cámara en la escena 3D.
@@ -39,6 +39,11 @@ export interface MarkerHandles {
   setSelected: (cameraId: string | null) => void;
   setHovered: (cameraId: string | null) => void;
   updateStatuses: (cameras: readonly Camera[]) => void;
+  /**
+   * Factor de noche (0 = día, 1 = noche): los marcadores se vuelven emisivos
+   * para que la cámara siga localizándose sobre el terreno oscuro.
+   */
+  setNightFactor: (factor: number) => void;
   dispose: () => void;
 }
 
@@ -95,12 +100,17 @@ export function buildMarkers(cameras: readonly Camera[], sceneRadius: number): M
   const bodyByCameraId = new Map<string, Mesh>();
   const lensByCameraId = new Map<string, Mesh>();
   const haloByCameraId = new Map<string, Sprite>();
+  const statusLightByCameraId = new Map<string, Mesh>();
+  /** Factor de noche aplicado a los emisivos. */
+  let nightFactor = 0;
 
   for (const camera of cameras) {
     const position = planToWorld(camera.position);
     const marker = new Group();
     marker.position.set(position.x, 0, position.z);
     // El heading del plano (0 = este, 90 = sur) se traduce a la rotación Y.
+    // El cuerpo de la cámara gira con él: el cono y el objetivo apuntan al
+    // mismo sitio.
     marker.rotation.y = -(camera.heading * Math.PI) / 180;
 
     const post = new Mesh(postGeometry, postMaterial);
@@ -113,12 +123,14 @@ export function buildMarkers(cameras: readonly Camera[], sceneRadius: number): M
     bracket.castShadow = true;
     marker.add(bracket);
 
-    const statusColor = STATUS_COLOR[camera.status];
+    // El color del cuerpo es el de la clasificación del informe; el estado
+    // operativo se comunica con el halo y el testigo.
+    const statusColor = CLASSIFICATION_COLOR[camera.assessment.classification];
     const bodyMaterial = track(
       new MeshStandardMaterial({
         color: statusColor,
         emissive: new Color(statusColor),
-        emissiveIntensity: emissiveIntensityFor(camera.status),
+        emissiveIntensity: emissiveIntensityFor(camera.assessment.classification),
         roughness: 0.42,
         metalness: 0.36,
       }),
@@ -146,7 +158,7 @@ export function buildMarkers(cameras: readonly Camera[], sceneRadius: number): M
       new MeshStandardMaterial({
         color: 0x1b232e,
         emissive: new Color(statusColor),
-        emissiveIntensity: emissiveIntensityFor(camera.status) * 0.7,
+        emissiveIntensity: emissiveIntensityFor(camera.assessment.classification) * 0.7,
         roughness: 0.22,
         metalness: 0.75,
       }),
@@ -168,6 +180,7 @@ export function buildMarkers(cameras: readonly Camera[], sceneRadius: number): M
     const statusLight = new Mesh(statusGeometry, statusMaterial);
     statusLight.position.set(0.28, BODY_HEIGHT + 0.32, 0);
     marker.add(statusLight);
+    statusLightByCameraId.set(camera.id, statusLight);
 
     // Proxy de selección: no se dibuja, pero sí responde al raycasting.
     const proxy = new Mesh(proxyGeometry, proxyMaterial);
@@ -218,11 +231,10 @@ export function buildMarkers(cameras: readonly Camera[], sceneRadius: number): M
   function applyEmphasis(cameraId: string): void {
     const body = bodyByCameraId.get(cameraId);
     const lens = lensByCameraId.get(cameraId);
+    const classification = body?.userData.classification as Camera['assessment']['classification'];
     if (body) {
       const material = body.material as MeshStandardMaterial;
-      const base = emissiveIntensityFor(
-        (body.userData.status as CameraStatus | undefined) ?? 'activa',
-      );
+      const base = emissiveIntensityFor(classification) * (0.35 + nightFactor * 0.9);
       const selected = cameraId === selectedId;
       const hovered = cameraId === hoveredId;
       material.emissiveIntensity = base + (selected ? 1.1 : 0) + (hovered ? 0.55 : 0);
@@ -232,15 +244,22 @@ export function buildMarkers(cameras: readonly Camera[], sceneRadius: number): M
       const material = lens.material as MeshStandardMaterial;
       material.emissiveIntensity =
         (cameraId === selectedId ? 1.9 : cameraId === hoveredId ? 1.2 : 0.55) *
-        emissiveIntensityFor(
-          (bodyByCameraId.get(cameraId)?.userData.status as CameraStatus | undefined) ?? 'activa',
-        );
+        emissiveIntensityFor(classification) *
+        (0.4 + nightFactor);
+    }
+    const statusLight = statusLightByCameraId.get(cameraId);
+    if (statusLight) {
+      const material = statusLight.material as MeshStandardMaterial;
+      material.emissiveIntensity = 0.8 + nightFactor * 1.6;
     }
   }
 
   for (const [id, body] of bodyByCameraId) {
     const camera = cameras.find((item) => item.id === id);
-    if (camera) body.userData.status = camera.status;
+    if (camera) {
+      body.userData.status = camera.status;
+      body.userData.classification = camera.assessment.classification;
+    }
   }
 
   return {
@@ -258,21 +277,30 @@ export function buildMarkers(cameras: readonly Camera[], sceneRadius: number): M
     },
     updateStatuses: (updated) => {
       const statusById = new Map(updated.map((camera) => [camera.id, camera.status] as const));
+      const classificationById = new Map(
+        updated.map((camera) => [camera.id, camera.assessment.classification] as const),
+      );
       for (const [id, body] of bodyByCameraId) {
         const status = statusById.get(id);
         if (!status) continue;
-        const color = STATUS_COLOR[status];
+        const classification = classificationById.get(id) ?? 'buena_general';
+        const color = CLASSIFICATION_COLOR[classification];
         const material = body.material as MeshStandardMaterial;
         material.color.setHex(color);
         material.emissive.setHex(color);
         body.userData.status = status;
+        body.userData.classification = classification;
       }
       for (const [id, lens] of lensByCameraId) {
-        const status = statusById.get(id);
-        if (!status) continue;
+        const classification = classificationById.get(id);
+        if (!classification) continue;
         const material = lens.material as MeshStandardMaterial;
-        material.emissive.setHex(STATUS_COLOR[status]);
+        material.emissive.setHex(CLASSIFICATION_COLOR[classification]);
       }
+      for (const id of bodyByCameraId.keys()) applyEmphasis(id);
+    },
+    setNightFactor: (factor) => {
+      nightFactor = Math.max(0, Math.min(1, factor));
       for (const id of bodyByCameraId.keys()) applyEmphasis(id);
     },
     dispose: () => {
@@ -282,16 +310,17 @@ export function buildMarkers(cameras: readonly Camera[], sceneRadius: number): M
   };
 }
 
-function emissiveIntensityFor(status: CameraStatus): number {
-  switch (status) {
-    case 'alerta':
-      return 1.5;
-    case 'activa':
+/** Emisivo base según la clasificación del informe. */
+function emissiveIntensityFor(classification: Camera['assessment']['classification']): number {
+  switch (classification) {
+    case 'buena_general':
       return 0.32;
-    case 'fallando':
-      return 0.45;
-    case 'inactiva':
-      return 0.06;
+    case 'limitada':
+      return 0.42;
+    case 'deficiente':
+      return 0.5;
+    case 'sin_imagen':
+      return 0.08;
   }
 }
 

@@ -1,25 +1,37 @@
-import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
-import type { IlluminationPreference } from '@/domain/types';
+import { create } from 'zustand';
+import type { SceneHour } from '@/domain/types';
 
 /** Preferencias de interfaz que sobreviven a la recarga. */
 export type GridLayout = 1 | 4 | 9 | 16;
-export type MapMode = '2d' | '3d';
+/**
+ * Representación del mapa perimetral.
+ *
+ * - `2d`: plano SVG del proyecto (papel técnico).
+ * - `3d`: escena isométrica de Three.js.
+ * - `geo`: vista geoespacial de Cesium sobre el terreno real.
+ */
+export type MapMode = '2d' | '3d' | 'geo';
 
 interface UiState {
   gridLayout: GridLayout;
   monitoringPage: number;
   sectorFilter: string;
   mapMode: MapMode;
-  /** Preferencia de iluminación del feed (Auto sigue el reloj de la plataforma). */
-  illumination: IlluminationPreference;
+  /**
+   * Hora forzada de la escena (0–24).
+   *
+   * `null` = seguir el reloj de la plataforma. Cuando el operador fija una
+   * hora desde la vista de mapa, el feed y la escena 3D responden a esa hora.
+   */
+  sceneHour: SceneHour;
   /** Paneles laterales plegables, indexados por identificador. */
   collapsedPanels: Record<string, boolean>;
   setGridLayout: (layout: GridLayout) => void;
   setMonitoringPage: (page: number) => void;
   setSectorFilter: (sectorId: string) => void;
   setMapMode: (mode: MapMode) => void;
-  setIllumination: (illumination: IlluminationPreference) => void;
+  setSceneHour: (hour: SceneHour) => void;
   togglePanel: (key: string) => void;
 }
 
@@ -30,13 +42,13 @@ export const useUiStore = create<UiState>()(
       monitoringPage: 0,
       sectorFilter: 'todos',
       mapMode: '2d',
-      illumination: 'auto',
+      sceneHour: null,
       collapsedPanels: {},
       setGridLayout: (gridLayout) => set({ gridLayout, monitoringPage: 0 }),
       setMonitoringPage: (monitoringPage) => set({ monitoringPage }),
       setSectorFilter: (sectorFilter) => set({ sectorFilter, monitoringPage: 0 }),
       setMapMode: (mapMode) => set({ mapMode }),
-      setIllumination: (illumination) => set({ illumination }),
+      setSceneHour: (sceneHour) => set({ sceneHour }),
       togglePanel: (key) =>
         set((state) => ({
           collapsedPanels: {
@@ -47,7 +59,7 @@ export const useUiStore = create<UiState>()(
     }),
     {
       name: 'agunsa-sentinel:ui',
-      version: 1,
+      version: 2,
       storage: createJSONStorage(() => localStorage),
       skipHydration: true,
       partialize: (state) => ({
@@ -55,7 +67,7 @@ export const useUiStore = create<UiState>()(
         monitoringPage: state.monitoringPage,
         sectorFilter: state.sectorFilter,
         mapMode: state.mapMode,
-        illumination: state.illumination,
+        sceneHour: state.sceneHour,
         collapsedPanels: state.collapsedPanels,
       }),
     },

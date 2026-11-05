@@ -15,7 +15,7 @@ export function ErrorView({ onReset }: { onReset: () => void }) {
       <TriangleAlert className="size-8 text-critical" />
       <h1 className="text-2xl font-semibold tracking-tight">Error en el centro de control</h1>
       <p className="max-w-md text-sm text-muted-foreground">
-        El mockup ha encontrado un error inesperado al renderizar esta vista.
+        La plataforma ha encontrado un error inesperado al mostrar esta vista.
       </p>
       <Button onClick={onReset}>Reintentar</Button>
     </div>

@@ -5,7 +5,15 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    ignores: ['.next/**', 'node_modules/**', 'out/**', 'next-env.d.ts', 'src/scene/**/*.d.ts'],
+    ignores: [
+      '.next/**',
+      'node_modules/**',
+      'out/**',
+      'next-env.d.ts',
+      'src/scene/**/*.d.ts',
+      // Recursos estáticos de Cesium: los regenera `npm run copy:cesium`.
+      'public/CESIUM/**',
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
@@ -34,7 +42,10 @@ export default tseslint.config(
   },
   {
     files: ['**/*.mjs'],
-    languageOptions: { sourceType: 'module' },
+    languageOptions: {
+      sourceType: 'module',
+      globals: { console: 'readonly', process: 'readonly' },
+    },
   },
   prettier,
 );

@@ -44,8 +44,7 @@ export const ARCHITECTURE_CHAIN: readonly ArchitectureStage[] = [
     label: 'VMS y almacenamiento',
     requirement:
       'Licencias por canal, usuarios y ampliación; roles, auditoría, alarmas de caída, mapa verificado, reproducción y exportación trazable. Redundancia según criticidad y costo aprobado.',
-    validation:
-      'Pruebas SAT: caída, recuperación, roles, auditoría y exportación de evidencia.',
+    validation: 'Pruebas SAT: caída, recuperación, roles, auditoría y exportación de evidencia.',
   },
   {
     id: 'operacion',
@@ -156,5 +155,4 @@ export const REQUESTED_DECISIONS: readonly string[] = [
 ];
 
 /** Nota sobre el acta de cambio incluida en el informe. */
-export const CHANGE_ACT_NOTE =
-  'El acta de cambio incluida es un formato sin firmas ni aprobación.';
+export const CHANGE_ACT_NOTE = 'El acta de cambio incluida es un formato sin firmas ni aprobación.';

@@ -1,7 +1,6 @@
 'use client';
 
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,37 +9,98 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { SimulationControl } from '@/features/simulation/simulation-control';
+import { Input } from '@/components/ui/input';
+import { Kbd } from '@/components/ui/kbd';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 import { CURRENT_USER } from '@/data/users';
 import { USER_ROLE_LABEL } from '@/domain/labels';
-import { LogOut, Settings, UserRound } from 'lucide-react';
+import { LiveTransport } from '@/features/simulation/live-transport';
+import { LogOut, Search, Settings, UserRound } from 'lucide-react';
+import { useEffect, useRef, useState, type RefObject } from 'react';
 import { AlertDrawer } from './alert-drawer';
-import { SimulatedClock } from './simulated-clock';
+import { OperationClock } from './operation-clock';
+import { ThemeToggle } from './theme-toggle';
 
-/** Barra superior: contexto de la sesión, reloj simulado y acceso a la demo. */
+/**
+ * Atajo de teclado del buscador.
+ *
+ * Devuelve la etiqueta que se muestra en la píldora y enfoca el campo al
+ * pulsar ⌘K (macOS) o Ctrl+K (resto de plataformas).
+ */
+function useSearchShortcut(inputRef: RefObject<HTMLInputElement | null>): string {
+  const [label, setLabel] = useState('Ctrl K');
+
+  useEffect(() => {
+    const isApple = /mac|iphone|ipad|ipod/i.test(navigator.userAgent);
+    setLabel(isApple ? '⌘K' : 'Ctrl K');
+  }, []);
+
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent): void {
+      if (event.key.toLowerCase() !== 'k') return;
+      if (!event.metaKey && !event.ctrlKey) return;
+      event.preventDefault();
+      inputRef.current?.focus();
+    }
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [inputRef]);
+
+  return label;
+}
+
+/** Barra superior: contexto de la sesión, transporte de la operación y usuario. */
 export function Topbar() {
-  return (
-    <header className="flex h-14 shrink-0 items-center gap-4 border-b border-border bg-card/60 px-4">
-      <div className="flex min-w-0 flex-1 items-center gap-3">
-        <span className="hidden text-xs text-muted-foreground sm:inline">
-          Centro de control · turno noche
-        </span>
-        <span className="hidden h-4 w-px bg-border sm:inline-block" />
-        <span className="text-xs text-muted-foreground">
-          Hora simulada <SimulatedClock />
-        </span>
-      </div>
+  const searchRef = useRef<HTMLInputElement>(null);
+  const shortcut = useSearchShortcut(searchRef);
 
-      <div className="flex items-center gap-2">
-        <SimulationControl variant="button" />
+  return (
+    <header className="flex h-14 shrink-0 items-center gap-3 border-b border-border bg-background px-4">
+      <SidebarTrigger className="md:hidden" />
+
+      <form
+        role="search"
+        onSubmit={(event) => event.preventDefault()}
+        className="relative w-full max-w-[320px]"
+      >
+        <Search
+          className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+          aria-hidden="true"
+        />
+        <Input
+          ref={searchRef}
+          type="search"
+          name="q"
+          placeholder="Buscar..."
+          aria-label="Buscar en el centro de control"
+          className="h-9 w-full max-w-[320px] pr-14 pl-9"
+          data-testid="global-search"
+        />
+        <Kbd className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2">
+          {shortcut}
+        </Kbd>
+      </form>
+
+      <div className="ml-auto flex items-center gap-2">
+        <span className="hidden items-center gap-2 text-xs text-muted-foreground lg:flex">
+          <span>Centro de control · turno noche</span>
+          <span className="h-4 w-px bg-border" aria-hidden="true" />
+          <OperationClock />
+        </span>
+
+        <LiveTransport />
 
         <AlertDrawer />
+
+        <ThemeToggle />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
               type="button"
-              className="flex items-center gap-2 rounded-md px-1.5 py-1 text-left transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+              className="flex items-center gap-2 rounded-md px-1.5 py-1 text-left transition-colors duration-(--duration-fast) hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+              data-testid="topbar-user-trigger"
             >
               <Avatar className="size-7">
                 <AvatarFallback className="bg-info/15 text-[11px] font-semibold text-info">
@@ -71,7 +131,7 @@ export function Topbar() {
             <DropdownMenuSeparator />
             <DropdownMenuItem disabled>
               <UserRound className="size-4" />
-              Perfil (simulado)
+              Perfil
             </DropdownMenuItem>
             <DropdownMenuItem disabled>
               <Settings className="size-4" />
@@ -84,13 +144,6 @@ export function Topbar() {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-
-        <Badge
-          variant="outline"
-          className="hidden border-border bg-muted text-[11px] text-muted-foreground lg:inline-flex"
-        >
-          v1.0 · demo
-        </Badge>
       </div>
     </header>
   );

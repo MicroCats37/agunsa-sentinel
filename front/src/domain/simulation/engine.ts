@@ -1,10 +1,5 @@
 import { evaluateRule } from '@/domain/rule-eval';
-import type {
-  CameraTrackTarget,
-  SecurityRule,
-  VirtualLine,
-  Zone,
-} from '@/domain/types';
+import type { CameraTrackTarget, SecurityRule, VirtualLine, Zone } from '@/domain/types';
 import type {
   SimActor,
   SimActorState,
@@ -266,7 +261,8 @@ export class SimulationEngine {
         x: state.x,
         y: state.y,
         width: state.actor.objectType === 'vehiculo' ? state.actor.size : state.actor.size * 0.55,
-        height: state.actor.objectType === 'vehiculo' ? state.actor.size * 0.72 : state.actor.size * 2.2,
+        height:
+          state.actor.objectType === 'vehiculo' ? state.actor.size * 0.72 : state.actor.size * 2.2,
       },
     }));
 
@@ -375,10 +371,7 @@ export function isActorActive(actor: SimActor, nowSec: number): boolean {
  * Interpola la posición del actor en el instante dado.
  * Fuera del rango de keyframes se mantiene el extremo más cercano.
  */
-export function actorPositionAt(
-  actor: SimActor,
-  nowSec: number,
-): { x: number; y: number } {
+export function actorPositionAt(actor: SimActor, nowSec: number): { x: number; y: number } {
   const frames = actor.keyframes;
   if (frames.length === 0) return { x: 0.5, y: 0.7 };
   const first = frames[0];

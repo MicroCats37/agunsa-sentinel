@@ -15,6 +15,11 @@ const badgeVariants = cva(
         outline: 'border-border text-foreground [a]:hover:bg-muted [a]:hover:text-muted-foreground',
         ghost: 'hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50',
         link: 'text-primary underline-offset-4 hover:underline',
+        /** Delta pill: tinted background at 15% with saturated text. */
+        positive:
+          'border-transparent bg-normal/15 text-normal ring-1 ring-normal/25 px-1.5 text-[11px] font-medium tabular-nums tracking-tight',
+        negative:
+          'border-transparent bg-critical/15 text-critical ring-1 ring-critical/25 px-1.5 text-[11px] font-medium tabular-nums tracking-tight',
       },
     },
     defaultVariants: {

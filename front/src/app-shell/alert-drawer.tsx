@@ -15,9 +15,10 @@ import { isIncidentActive } from '@/domain/incident-status';
 import { SEVERITY_ORDER } from '@/domain/labels';
 import type { Severity } from '@/domain/types';
 import { useIncidentsStore } from '@/store/incidents-store';
+import gsap from 'gsap';
 import { Bell, CheckCheck, ChevronRight, CircleAlert } from 'lucide-react';
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 /**
  * Bandeja de alertas de la barra superior.
@@ -45,6 +46,38 @@ export function AlertDrawer() {
 
   const unread = active.filter((incident) => !readIncidentIds.includes(incident.id));
 
+  /*
+   * Entrada escalonada de la lista: GSAP conduce la línea de tiempo y cada
+   * alerta entra con su propio desplazamiento. Con movimiento reducido la
+   * lista aparece sin animación.
+   */
+  const listRef = useRef<HTMLUListElement>(null);
+
+  useEffect(() => {
+    const list = listRef.current;
+    if (!list || !open) return;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const items = list.querySelectorAll('[data-alert-entry]');
+    if (reduced || items.length === 0) return;
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        items,
+        { autoAlpha: 0, x: 18 },
+        {
+          autoAlpha: 1,
+          x: 0,
+          duration: 0.28,
+          ease: 'power2.out',
+          stagger: 0.045,
+          clearProps: 'transform,visibility',
+        },
+      );
+    }, list);
+
+    return () => ctx.revert();
+  }, [open, active.length]);
+
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
@@ -58,10 +91,10 @@ export function AlertDrawer() {
           <Bell className="size-4" />
           {unread.length > 0 ? (
             <span
-              className="absolute -top-0.5 -right-0.5 flex size-4 items-center justify-center rounded-full bg-critical text-[10px] font-bold text-white"
+              className="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-critical px-1 text-[10px] font-bold text-white tabular-nums"
               data-testid="alert-drawer-badge"
             >
-              {unread.length > 9 ? '9+' : unread.length}
+              {unread.length}
             </span>
           ) : null}
         </Button>
@@ -75,7 +108,7 @@ export function AlertDrawer() {
           </SheetTitle>
           <SheetDescription>
             {active.length} incidentes abiertos · {unread.length} sin revisar. La lista se actualiza
-            con el motor de reglas del mockup.
+            con el motor de reglas en tiempo real.
           </SheetDescription>
         </SheetHeader>
 
@@ -99,15 +132,15 @@ export function AlertDrawer() {
                 No hay incidentes activos en este momento.
               </p>
               <p className="mt-1 text-xs text-muted-foreground/80">
-                Usa “Simular incidente” para generar una detección de demostración.
+                Activa la operación en vivo para recibir las detecciones del motor de reglas.
               </p>
             </div>
           ) : (
-            <ul className="flex flex-col gap-2">
+            <ul className="flex flex-col gap-2" ref={listRef}>
               {active.map((incident) => {
                 const isUnread = !readIncidentIds.includes(incident.id);
                 return (
-                  <li key={incident.id}>
+                  <li key={incident.id} data-alert-entry>
                     <div
                       className={`rounded-lg border transition-colors ${
                         isUnread ? 'border-warning/45 bg-warning/5' : 'border-border bg-card'

@@ -13,8 +13,8 @@ export function NotFoundView() {
       <p className="text-xs font-semibold tracking-[0.18em] text-warning uppercase">Error 404</p>
       <h1 className="text-2xl font-semibold tracking-tight">Recurso no encontrado</h1>
       <p className="max-w-md text-sm text-muted-foreground">
-        La ruta solicitada no existe en el mockup de AGUNSA Sentinel. Vuelve al dashboard para
-        retomar la operación.
+        La ruta solicitada no existe en AGUNSA Sentinel. Vuelve al dashboard para retomar la
+        operación.
       </p>
       <Button asChild>
         <Link href="/dashboard">Ir al dashboard</Link>

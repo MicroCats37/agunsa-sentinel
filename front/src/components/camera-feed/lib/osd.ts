@@ -195,11 +195,7 @@ function drawFaultBanner(
  * Se apoya en la esquina superior derecha, libre del bloque de estado, y usa
  * ámbar: un desfase de reloj es un problema de servicio, no una intrusión.
  */
-function drawHealthWarning(
-  ctx: CanvasRenderingContext2D,
-  width: number,
-  label: string,
-): void {
+function drawHealthWarning(ctx: CanvasRenderingContext2D, width: number, label: string): void {
   ctx.textBaseline = 'middle';
   ctx.textAlign = 'right';
   ctx.font = `700 9px ${FONT}`;

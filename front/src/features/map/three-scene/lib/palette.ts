@@ -39,6 +39,19 @@ export const STATUS_COLOR = {
   inactiva: 0x5c6b80,
 } as const;
 
+/**
+ * Color de la clasificación del informe CCTV.
+ *
+ * Verde = buena general · ámbar = limitada · rojo = deficiente · gris = sin
+ * imagen. Es la misma semántica que usa el registro de cámaras y el plano 2D.
+ */
+export const CLASSIFICATION_COLOR = {
+  buena_general: 0x3fb27f,
+  limitada: 0xe8a33d,
+  deficiente: 0xe5484d,
+  sin_imagen: 0x5c6b80,
+} as const;
+
 /** Cielo y fondo de la escena: nunca negro. */
 export const SKY_COLOR = 0x101821;
 export const FOG_COLOR = 0x121a24;

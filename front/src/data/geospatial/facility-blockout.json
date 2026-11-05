@@ -1,0 +1,196 @@
+{
+  "metadata": {
+    "phase": "3A",
+    "status": "conceptual",
+    "origin": {
+      "latitude": -11.99135833963193,
+      "longitude": -77.12427641107904
+    },
+    "units": "meters",
+    "coordinateFrame": "local ENU: east, north, up",
+    "renderInitialLayout": false,
+    "sourceNote": "Distribución aproximada basada en el perímetro OSM y lectura visual de la imagen satelital autorizada. No apta para ingeniería."
+  },
+  "structures": [
+    {
+      "id": "warehouse-north",
+      "name": "Almacén norte",
+      "east": 54,
+      "north": 84,
+      "width": 76,
+      "depth": 72,
+      "height": 11,
+      "heading": -6,
+      "wallColor": "#c8c8bf",
+      "roofColor": "#edf0eb"
+    },
+    {
+      "id": "service-northwest",
+      "name": "Edificio de servicio norte",
+      "east": -55,
+      "north": 111,
+      "width": 44,
+      "depth": 38,
+      "height": 6,
+      "heading": -6,
+      "wallColor": "#a6afb0",
+      "roofColor": "#d7ddda"
+    },
+    {
+      "id": "warehouse-center",
+      "name": "Almacén central",
+      "east": 23,
+      "north": 10,
+      "width": 82,
+      "depth": 47,
+      "height": 9,
+      "heading": -6,
+      "wallColor": "#aeb4b1",
+      "roofColor": "#d9ddd8"
+    },
+    {
+      "id": "workshop-west",
+      "name": "Taller oeste",
+      "east": -61,
+      "north": 20,
+      "width": 42,
+      "depth": 38,
+      "height": 7,
+      "heading": -6,
+      "wallColor": "#8b9494",
+      "roofColor": "#bcc2bf"
+    },
+    {
+      "id": "warehouse-southwest",
+      "name": "Almacén suroeste",
+      "east": -60,
+      "north": -105,
+      "width": 63,
+      "depth": 53,
+      "height": 9,
+      "heading": -6,
+      "wallColor": "#b66f61",
+      "roofColor": "#d59a8d"
+    },
+    {
+      "id": "warehouse-south",
+      "name": "Almacén sur",
+      "east": 0,
+      "north": -124,
+      "width": 49,
+      "depth": 67,
+      "height": 10,
+      "heading": -6,
+      "wallColor": "#c9c8bf",
+      "roofColor": "#e8ebe5"
+    },
+    {
+      "id": "service-east",
+      "name": "Edificio de servicio este",
+      "east": 56,
+      "north": 4,
+      "width": 24,
+      "depth": 34,
+      "height": 6,
+      "heading": -6,
+      "wallColor": "#7f8989",
+      "roofColor": "#aeb6b3"
+    },
+    {
+      "id": "gatehouse-south",
+      "name": "Garita sur",
+      "east": -83,
+      "north": -190,
+      "width": 17,
+      "depth": 11,
+      "height": 4,
+      "heading": -6,
+      "wallColor": "#d2d6d0",
+      "roofColor": "#f2f3ee"
+    }
+  ],
+  "containerRows": [
+    {
+      "id": "yard-north",
+      "name": "Patio norte",
+      "east": -61,
+      "north": 151,
+      "count": 8,
+      "lanes": 4,
+      "spacing": 13,
+      "laneSpacing": 4,
+      "heading": 0,
+      "stackPattern": [1, 1, 2, 1, 2, 1, 1, 2]
+    },
+    {
+      "id": "yard-center-west",
+      "name": "Patio central oeste",
+      "east": -83,
+      "north": 58,
+      "count": 7,
+      "lanes": 4,
+      "spacing": 13,
+      "laneSpacing": 4,
+      "heading": 0,
+      "stackPattern": [1, 2, 1, 1, 2, 1, 2]
+    },
+    {
+      "id": "yard-east-long",
+      "name": "Patio longitudinal este",
+      "east": 47,
+      "north": 53,
+      "count": 14,
+      "lanes": 4,
+      "spacing": 11.8,
+      "laneSpacing": 3.4,
+      "heading": -90,
+      "stackPattern": [2, 1, 2, 2, 1, 2, 1, 2, 2, 1, 2, 1, 2, 2]
+    },
+    {
+      "id": "yard-center-south",
+      "name": "Patio central sur",
+      "east": -84,
+      "north": -47,
+      "count": 8,
+      "lanes": 4,
+      "spacing": 13,
+      "laneSpacing": 4,
+      "heading": 0,
+      "stackPattern": [1, 2, 1, 2, 1, 1, 2, 1]
+    },
+    {
+      "id": "yard-south",
+      "name": "Patio sur",
+      "east": -88,
+      "north": -168,
+      "count": 8,
+      "lanes": 5,
+      "spacing": 13,
+      "laneSpacing": 4,
+      "heading": 0,
+      "stackPattern": [1, 1, 2, 1, 2, 1, 1, 2]
+    }
+  ],
+  "container": {
+    "length": 11.8,
+    "width": 2.45,
+    "height": 2.6,
+    "colors": ["#b54735", "#cf6b38", "#246b8f", "#2d7c69", "#d0a625", "#6d7d84"]
+  },
+  "perimeter": [
+    { "east": -119.6, "north": -212.4 },
+    { "east": 45.1, "north": -227.7 },
+    { "east": 154.1, "north": 251.6 },
+    { "east": 113.1, "north": 215.4 },
+    { "east": -89.3, "north": 170.3 },
+    { "east": -93.7, "north": 59.1 },
+    { "east": -105.2, "north": 59.4 }
+  ],
+  "perimeterWall": {
+    "height": 5.8,
+    "thickness": 1.4,
+    "maxSegmentLength": 8,
+    "color": "#9d392d",
+    "texture": "/textures/brick-red.svg"
+  }
+}

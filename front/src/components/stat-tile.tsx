@@ -1,6 +1,7 @@
 import { AnimatedNumber } from '@/components/animated-number';
 import { Sparkline, type SparkTone } from '@/components/sparkline';
 import { Card } from '@/components/ui/card';
+import { cn } from 'cn';
 import type { ReactNode } from 'react';
 
 /** Tiles de indicador del dashboard. Cifras tabulares para alinear columnas. */
@@ -46,17 +47,26 @@ export function StatTile({
   return (
     <Card
       size="sm"
-      className={`relative gap-1 overflow-hidden ${interactive ? 'cursor-pointer transition-colors hover:bg-muted/60' : ''}`}
+      interactive={interactive}
+      className={cn(
+        'relative gap-1 overflow-hidden',
+        interactive &&
+          'cursor-pointer transition-colors duration-(--duration-fast) ease-(--ease-out) hover:border-foreground/20',
+      )}
       onClick={onClick}
       {...(testId ? { 'data-testid': testId } : {})}
     >
       <div className="flex items-start justify-between gap-2 px-(--card-spacing)">
         <div className="min-w-0">
-          <p className="truncate text-xs font-medium tracking-wide text-muted-foreground uppercase">
+          <p className="truncate text-[11px] font-semibold tracking-[0.14em] text-muted-foreground uppercase">
             {label}
           </p>
           <p
-            className={`mt-1 text-2xl leading-none font-semibold tabular-nums ${classes.value}`}
+            data-slot="stat-value"
+            className={cn(
+              'mt-1 text-[28px] leading-none font-semibold tracking-tight tabular-nums',
+              classes.value,
+            )}
             {...(testId ? { 'data-testid': `${testId}-value` } : {})}
           >
             {typeof value === 'number' ? <AnimatedNumber value={value} /> : value}

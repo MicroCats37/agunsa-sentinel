@@ -152,6 +152,74 @@ export interface Point {
   y: number;
 }
 
+/**
+ * Vértice georreferenciado en WGS84 (grados decimales).
+ *
+ * Se usa en la vista geoespacial (Cesium) para describir polígonos dibujados
+ * sobre el terreno real y para anclar la posición de las cámaras.
+ */
+export interface GeoPoint {
+  longitude: number;
+  latitude: number;
+}
+
+/**
+ * Encuadre geográfico de una cámara.
+ *
+ * - `longitude` / `latitude`: posición WGS84 sobre el perímetro real.
+ * - `height`: altura sobre el nivel del mar en metros (poste a 7,2 m).
+ * - `heading`: azimut en grados, 0 = norte, sentido horario.
+ *
+ * La posición es **provisional**: el informe CCTV no vincula cada IP con un
+ * poste verificado en campo.
+ */
+export interface CameraGeoPosition {
+  longitude: number;
+  latitude: number;
+  height: number;
+  heading: number;
+  /** Fuente del dato: deja constancia de que es una estimación cartográfica. */
+  source: string;
+}
+
+/**
+ * Categoría de una zona dibujada sobre la vista geoespacial.
+ *
+ * Reutiliza la taxonomía del editor de distribución del proyecto heredado
+ * (almacén, oficina, contenedor, vehículo, área verde) y añade la categoría
+ * propia del producto: zona de detección.
+ */
+export type GeospatialZoneKind =
+  | 'almacen'
+  | 'oficina'
+  | 'contenedor'
+  | 'vehiculo'
+  | 'verde'
+  | 'deteccion';
+
+/**
+ * Zona georreferenciada del recinto.
+ *
+ * A diferencia de `Zone` (polígonos normalizados dentro del encuadre de una
+ * cámara), esta zona tiene coordenadas WGS84 y se dibuja sobre el terreno.
+ */
+export interface GeospatialZone {
+  id: string;
+  name: string;
+  kind: GeospatialZoneKind;
+  /** Polígono en WGS84, con al menos tres vértices. */
+  polygon: GeoPoint[];
+  /** Altura de extrusión en metros. */
+  height: number;
+  /** Color de relleno. */
+  color: string;
+  /** Color del contorno. */
+  outline: string;
+  /** Cámara del inventario a la que se asocia, si la zona cubre su encuadre. */
+  cameraId: string | null;
+  enabled: boolean;
+}
+
 /** Ventana horaria en formato HH:MM con días de la semana (0 = domingo). */
 export interface Schedule {
   start: string;
@@ -196,6 +264,14 @@ export interface CameraAssessment {
   obstructionId: string | null;
 }
 
+/** Capturas documentales de una cámara, tomadas en las dos sesiones de prueba. */
+export interface CameraPhotos {
+  /** Captura nocturna (02/11/2026 · 20:55). */
+  night?: string;
+  /** Captura diurna (03/11/2026 · 14:47). */
+  day?: string;
+}
+
 export interface Camera {
   id: string;
   name: string;
@@ -225,6 +301,28 @@ export interface Camera {
    * con un poste ni con una distancia medida.
    */
   positionProvisional: boolean;
+  /**
+   * Encuadre geográfico equivalente: la misma cámara sobre el perímetro real
+   * de la instalación (OpenStreetMap), con su rumbo expresado en azimut.
+   */
+  geo: CameraGeoPosition;
+  /**
+   * Capturas reales de la cámara, extraídas del informe de evaluación.
+   *
+   * Son fotografías fijas de las sesiones nocturna (02/11/2026) y diurna
+   * (03/11/2026): la evidencia documental del estado del equipo. No son
+   * vídeo en vivo; para eso hace falta el pipeline RTSP/WebRTC.
+   */
+  photos: CameraPhotos;
+  /**
+   * URL de transmisión en vivo del equipo, si existe.
+   *
+   * El navegador no puede consumir RTSP: hace falta un relé (MediaMTX o
+   * similar) que exponga WebRTC o HLS. Cuando se registre esa URL, el visor la
+   * usa en lugar de la captura fotográfica; mientras no exista, se muestra la
+   * evidencia del informe o el feed simulado.
+   */
+  liveUrl?: string;
   /** Marca el simulador: no forma parte del inventario real. */
   simulated: boolean;
 }
@@ -349,4 +447,8 @@ export interface CameraTrackTarget {
    * en la reproducción de la línea de tiempo.
    */
   keyframes?: readonly { t: number; x: number; y: number }[];
-  /** Confianza fija 
+  /** Confianza fija del detector. Si falta, se deriva del identificador. */
+  confidence?: number;
+  /** Un actor ambiental no dispara reglas: sólo da vida al encuadre. */
+  ambient?: boolean;
+}

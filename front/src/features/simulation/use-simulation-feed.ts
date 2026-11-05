@@ -2,11 +2,7 @@
 
 import { useCallback } from 'react';
 import type { CameraTrackTarget } from '@/domain/types';
-import {
-  SIMULATION_ENGINE,
-  timelineSecOf,
-  useSimulationStore,
-} from '@/store/simulation-store';
+import { SIMULATION_ENGINE, timelineSecOf, useSimulationStore } from '@/store/simulation-store';
 
 /**
  * Puente entre el motor de simulación y los feeds en canvas.
@@ -39,10 +35,7 @@ const HEALTH_WARNING: Record<string, string> = {
 export function useSimulationFeed(cameraId: string): SimulationFeed {
   const tracks = useSimulationStore((state) => state.tracks);
 
-  const getTimeSec = useCallback(
-    () => timelineSecOf(useSimulationStore.getState().clockMs),
-    [],
-  );
+  const getTimeSec = useCallback(() => timelineSecOf(useSimulationStore.getState().clockMs), []);
   const getClockMs = useCallback(() => useSimulationStore.getState().clockMs, []);
 
   const health = SIMULATION_ENGINE.cameraHealthAt(

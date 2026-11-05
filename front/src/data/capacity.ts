@@ -11,8 +11,7 @@ export const RETENTION_DAYS = 30;
 export const RESERVE_FACTOR = 0.25;
 
 /** Fórmula del informe: cámaras × Mb/s × 1 000 000 × 86 400 × días / 8 / 10^12. */
-export const CAPACITY_FORMULA =
-  'cámaras × Mb/s × 1 000 000 × 86 400 × días / 8 / 10^12';
+export const CAPACITY_FORMULA = 'cámaras × Mb/s × 1 000 000 × 86 400 × días / 8 / 10^12';
 
 export interface CapacityRow {
   /** Bitrate medio por cámara (Mb/s). */

@@ -1,7 +1,7 @@
 'use client';
 
 import { CameraFeed, type CameraFeedHandle } from '@/components/camera-feed';
-import type { Camera, IlluminationPreference } from '@/domain/types';
+import type { Camera, SceneHour } from '@/domain/types';
 import { useSimulationFeed } from '@/features/simulation/use-simulation-feed';
 import type { Ref } from 'react';
 
@@ -17,7 +17,7 @@ export interface SimulationCameraFeedProps {
   sectorName?: string;
   showDetections?: boolean;
   compact?: boolean;
-  illumination?: IlluminationPreference;
+  sceneHour?: SceneHour;
   className?: string;
   feedRef?: Ref<CameraFeedHandle>;
 }
@@ -27,7 +27,7 @@ export function SimulationCameraFeed({
   sectorName,
   showDetections = false,
   compact = false,
-  illumination = 'auto',
+  sceneHour = null,
   className,
   feedRef,
 }: SimulationCameraFeedProps) {
@@ -41,7 +41,7 @@ export function SimulationCameraFeed({
       targets={simulation.targets}
       showDetections={showDetections}
       compact={compact}
-      illumination={illumination}
+      sceneHour={sceneHour}
       getTimeSec={simulation.getTimeSec}
       getClockMs={simulation.getClockMs}
       healthWarning={simulation.healthWarning}
