@@ -6,9 +6,9 @@ import { useEffect } from 'react';
 /**
  * Motor de reproducción de la línea de tiempo.
  *
- * Un único `requestAnimationFrame` mueve el reloj simulado. Cuando la
+ * Un único `requestAnimationFrame` mueve el reloj de la noche. Cuando la
  * reproducción está en pausa el bucle no hace trabajo: la escena queda
- * congelada y reproducible, como debe ser en una demostración.
+ * congelada y reproducible.
  */
 export function SimulationTicker() {
   const tick = useSimulationStore((state) => state.tick);

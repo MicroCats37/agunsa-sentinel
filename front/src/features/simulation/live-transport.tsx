@@ -12,7 +12,7 @@ import {
 import { SCENARIOS } from '@/data/scenarios';
 import { INCIDENT_CATEGORY_LABEL } from '@/domain/labels';
 import { useLiveStore } from '@/store/live-store';
-import { AlertTriangle, Pause, Play } from 'lucide-react';
+import { AlertTriangle, MoreVertical, Pause, Play } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { forceScenario } from './force-scenario';
 
@@ -36,17 +36,38 @@ export function LiveTransport() {
 
   return (
     <div className="flex items-center gap-2">
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={toggle}
+        aria-label={transportLabel}
+        title={transportLabel}
+        data-testid="live-transport-play"
+      >
+        {running ? <Pause className="size-4" /> : <Play className="size-4" />}
+      </Button>
+
+      <span
+        className="hidden items-center gap-1.5 rounded-full border border-border px-2 py-0.5 text-[11px] tracking-[0.1em] text-muted-foreground uppercase md:inline-flex"
+        data-testid="live-status"
+      >
+        <span
+          className={`size-1.5 rounded-full ${running ? 'bg-normal' : 'bg-muted-foreground/50'}`}
+          aria-hidden="true"
+        />
+        {running ? 'En vivo' : 'En pausa'}
+      </span>
+
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button
-            variant="outline"
-            size="sm"
-            onClick={toggle}
-            aria-label={transportLabel}
-            title={transportLabel}
+            variant="ghost"
+            size="icon-sm"
+            aria-label="Opciones de transporte"
+            title="Opciones de transporte"
             data-testid="simulate-incident"
           >
-            {running ? <Pause className="size-4" /> : <Play className="size-4" />}
+            <MoreVertical className="size-4" />
           </Button>
         </DropdownMenuTrigger>
 
@@ -79,17 +100,6 @@ export function LiveTransport() {
           ))}
         </DropdownMenuContent>
       </DropdownMenu>
-
-      <span
-        className="hidden items-center gap-1.5 rounded-full border border-border px-2 py-0.5 text-[11px] tracking-[0.1em] text-muted-foreground uppercase md:inline-flex"
-        data-testid="live-status"
-      >
-        <span
-          className={`size-1.5 rounded-full ${running ? 'bg-normal' : 'bg-muted-foreground/50'}`}
-          aria-hidden="true"
-        />
-        {running ? 'En vivo' : 'En pausa'}
-      </span>
     </div>
   );
 }

@@ -29,6 +29,7 @@ import {
   type SimulationSpeed,
 } from '@/store/simulation-store';
 import { useSimulationFeed } from '@/features/simulation/use-simulation-feed';
+import { SimulationTicker } from '@/features/simulation/simulation-ticker';
 import gsap from 'gsap';
 import {
   Camera as CameraIcon,
@@ -116,6 +117,7 @@ export function TimelineView() {
 
   return (
     <div className="flex flex-col gap-5">
+      <SimulationTicker />
       <PageHeader
         eyebrow="Operación · Reproducción"
         title="Línea de tiempo de la noche"
