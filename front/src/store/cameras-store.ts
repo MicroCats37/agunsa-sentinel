@@ -1,7 +1,8 @@
 import { CAMERAS } from '@/data/cameras';
 import type { Camera } from '@/domain/types';
 import { create } from 'zustand';
-import { createJSONStorage, persist } from 'zustand/middleware';
+import { persist } from 'zustand/middleware';
+import { persistedStorage } from './storage';
 
 /**
  * Registro de cámaras en ejecución.
@@ -50,7 +51,7 @@ export const useCamerasStore = create<CamerasState>()(
     {
       name: 'agunsa-sentinel:cameras',
       version: 1,
-      storage: createJSONStorage(() => localStorage),
+      storage: persistedStorage,
       skipHydration: true,
       partialize: (state) => ({ overrides: state.overrides }),
     },

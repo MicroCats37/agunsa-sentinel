@@ -2,7 +2,8 @@ import { baselineGeospatialZones } from '@/data/geospatial/facility-layout';
 import { VIRTUAL_LINES, ZONES } from '@/data/zones';
 import type { GeospatialZone, VirtualLine, Zone } from '@/domain/types';
 import { create } from 'zustand';
-import { createJSONStorage, persist } from 'zustand/middleware';
+import { persist } from 'zustand/middleware';
+import { persistedStorage } from './storage';
 
 /**
  * Zonas inteligentes, líneas virtuales y zonas georreferenciadas.
@@ -96,7 +97,7 @@ export const useZonesStore = create<ZonesState>()(
     {
       name: 'agunsa-sentinel:zones',
       version: 2,
-      storage: createJSONStorage(() => localStorage),
+      storage: persistedStorage,
       skipHydration: true,
       partialize: (state) => ({
         zones: state.zones,

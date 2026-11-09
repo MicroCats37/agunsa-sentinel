@@ -2,7 +2,8 @@ import { INCIDENTS } from '@/data/incidents';
 import { canTransition, transitionStatus } from '@/domain/incident-status';
 import type { Incident, IncidentStatus } from '@/domain/types';
 import { create } from 'zustand';
-import { createJSONStorage, persist } from 'zustand/middleware';
+import { persist } from 'zustand/middleware';
+import { persistedStorage } from './storage';
 
 /**
  * Gestión del ciclo de vida de los incidentes.
@@ -84,7 +85,7 @@ export const useIncidentsStore = create<IncidentsState>()(
     {
       name: 'agunsa-sentinel:incidents',
       version: 1,
-      storage: createJSONStorage(() => localStorage),
+      storage: persistedStorage,
       skipHydration: true,
       partialize: (state) => ({
         incidents: state.incidents,

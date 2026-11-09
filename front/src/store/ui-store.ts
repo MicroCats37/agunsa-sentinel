@@ -1,6 +1,7 @@
-import { createJSONStorage, persist } from 'zustand/middleware';
+import { persist } from 'zustand/middleware';
 import { create } from 'zustand';
 import type { SceneHour } from '@/domain/types';
+import { persistedStorage } from './storage';
 
 /** Preferencias de interfaz que sobreviven a la recarga. */
 export type GridLayout = 1 | 4 | 9 | 16;
@@ -60,7 +61,7 @@ export const useUiStore = create<UiState>()(
     {
       name: 'agunsa-sentinel:ui',
       version: 2,
-      storage: createJSONStorage(() => localStorage),
+      storage: persistedStorage,
       skipHydration: true,
       partialize: (state) => ({
         gridLayout: state.gridLayout,

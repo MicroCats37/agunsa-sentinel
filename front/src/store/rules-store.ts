@@ -1,7 +1,8 @@
 import { RULES } from '@/data/rules';
 import type { SecurityRule } from '@/domain/types';
 import { create } from 'zustand';
-import { createJSONStorage, persist } from 'zustand/middleware';
+import { persist } from 'zustand/middleware';
+import { persistedStorage } from './storage';
 
 /** Motor de reglas configurable desde el módulo de administración. */
 interface RulesState {
@@ -33,7 +34,7 @@ export const useRulesStore = create<RulesState>()(
     {
       name: 'agunsa-sentinel:rules',
       version: 1,
-      storage: createJSONStorage(() => localStorage),
+      storage: persistedStorage,
       skipHydration: true,
       partialize: (state) => ({ rules: state.rules }),
     },

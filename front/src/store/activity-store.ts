@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { createJSONStorage, persist } from 'zustand/middleware';
+import { persist } from 'zustand/middleware';
+import { persistedStorage } from './storage';
 
 /** Historial de acciones y auditoría de cambios (módulo de administración). */
 export interface ActivityEntry {
@@ -36,7 +37,7 @@ export const useActivityStore = create<ActivityState>()(
     {
       name: 'agunsa-sentinel:activity',
       version: 1,
-      storage: createJSONStorage(() => localStorage),
+      storage: persistedStorage,
       skipHydration: true,
       partialize: (state) => ({ entries: state.entries }),
     },
